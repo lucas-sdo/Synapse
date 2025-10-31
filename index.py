@@ -41,26 +41,64 @@ def interpretar(codigo):
     linhas = [linha.strip()
               for linha in codigo.strip().split("\n") if linha.strip()]
 
+    def verificar_tipos_operacao(expressao, variaveis):
+        palavras = expressao.split()
+        operandos = []
+
+        for palavra in palavras:
+            if palavra in ['+', '-', '*', '/', '%']:
+                continue
+            elif palavra in variaveis:
+                operandos.append((palavra, type(variaveis[palavra])))
+            else:
+                try:
+                    int(palavra)
+                    operandos.append((palavra, int))
+                except ValueError:
+                    try:
+                        float(palavra)
+                        operandos.append((palavra, float))
+                    except ValueError:
+                        operandos.append((palavra, str))
+
+        if len(operandos) > 1:
+            primeiro_tipo = operandos[0][1]
+            for operando, tipo in operandos[1:]:
+                if tipo != primeiro_tipo:
+                    return False, f"Error: operating diferent types of data {operandos[0][0]}({primeiro_tipo.__name__}) e {operando}({tipo.__name__})"
+                continue
+            return True, None
+
     for linha in linhas:
-        # Definição de variável (atualmente pode ser integer ou string)
+        # Definição de variável
         if linha.startswith("var"):
             partes = linha.split("/")
             tipo = partes[1]
             nome = partes[2]
             valor = partes[3]
 
-            if tipo == "str":
+            if tipo == "bool":
+                if valor not in ["True", "False"]:
+                    raise ValueError(
+                        f'Error: Variables type boolean must be "True" or "False"')
+                else:
+                    valor = True if valor == "True" else False
+
+            elif tipo == "str":
                 valor = valor
 
             elif tipo == "int":
                 valor = int(valor)
 
+            elif tipo == "float":
+                valor = float(valor)
+
             else:
-                raise ValueError(f"Tipo '{tipo}' não reconhecido")
+                raise ValueError(f"Error: Type '{tipo}' not reconized")
 
             variaveis[nome] = valor
 
-        # Definição de retornos (funciona semelhantemente ao print())
+        # Definição de retornos
         elif linha.startswith("return/"):
             expressao = linha.replace("return/", "").strip()
 
@@ -68,6 +106,11 @@ def interpretar(codigo):
                 print(variaveis[expressao])
 
             else:
+                # Verificar tipos antes de executar
+                valido, erro = verificar_tipos_operacao(expressao, variaveis)
+                if not valido:
+                    raise ValueError(erro)
+
                 palavras = expressao.split()
                 for i, palavra in enumerate(palavras):
                     if palavra in variaveis:
@@ -77,24 +120,9 @@ def interpretar(codigo):
                 try:
                     resultado = eval(expressao_final)
                     print(resultado)
-
-                except Exception:
+                except Exception as e:
                     print(expressao_final)
 
 
-# ---------- Caso seja preciso escrever o código syn aqui: ----------
-# codigo_fonte = """
-# var/int/x/100
-# var/int/y/90
-
-# var/str/txt/Eu sou uma string!
-
-# return/x + y
-# return/txt
-# """
-
-# salvar_Syn("exemplo.syn", codigo_fonte)
-# print("Lido de volta:")
 conteudo = ler_Syn("exemplo.syn")
-# print(conteudo)
 interpretar(conteudo)

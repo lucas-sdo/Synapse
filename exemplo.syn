@@ -1,4 +1,5 @@
 syn
+
 var/int/x/200
 var/int/y/90
 var/float/z/100.5
@@ -6,8 +7,10 @@ var/bool/w/True
 
 var/str/txt/Olá, mundo!
 
+func/soma/a, b/return/a + b
+call/soma/5, 3
+
 return/x + y
 return/txt
 return/z
 return/w
-

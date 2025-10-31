@@ -1,0 +1,8 @@
+syn
+var/int/x/200
+var/int/y/90
+
+var/str/txt/Olá, mundo!
+
+return/x - y
+return/txt

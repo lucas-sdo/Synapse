@@ -1,17 +1,11 @@
 syn
 
-var/int/x/200
-var/int/y/90
-var/float/z/3.141592653589
-var/bool/w/True
-var/str/txt/Olá, mundo!
+var/str/string/I'm a string!
+var/int/x/10
+var/int/y/5
 
-func/add/a, b/(return/ 4 + 5)
-call/add/2, 2
+input/str/name/Qual seu nome?
 
-/this is a comment
-
-return/x - y
-return/txt
-return/z
-return/w
+return/str, int/("The addition of x and y is: "), (x + y)
+return/str, svar/("Hello, "), (name)
+return/svar/(string)

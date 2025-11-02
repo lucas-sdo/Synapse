@@ -2,8 +2,9 @@
 Documentation for Synapse(.syn):
 
 1. Basic Methods:
+
 //----------------------------------------------------------------------//
-1.1* Declaring variables (var/type/name/value):
+1.1 *Declaring variables (var/type/name/value):
     Use "var" folowed by "int" for integer numbers, "float" for numbers with decimal part, "bool" for boolean values(True or False) or "str" for strings. After expecificating the type of variable you can say any "name" for it (that doesn't contain the "/"). Just after doing this you will have an working variable. Remember of separing those values by "/".
 
     E.g.:
@@ -18,25 +19,28 @@ Documentation for Synapse(.syn):
     - String variables doesn't need to have quotation marks;
     - Boolean variables MUST contain their value's first letter written with Upercase e.g.:False;
 //----------------------------------------------------------------------//
-1.2* Returning a value (return/value):
-    Use "return/" folowed by anything you want to print on the screen, It can be a variable, or just write it right after the "/";
+1.2 *Returning a value (return/type, type/(value1), (value2)):
+    Use "return/" folowed by the type of the thing you want to print(int, str, float, bool, svar) anything you want to print on the screen, It can be a variable, or just write it right after the "/".
 
     E.g.:
-        var/str/my_string/Hello World! 
-        var/int/my_integer/1
+        var/str/string/I'm a string!
+        var/int/x/10
+        var/int/y/5
 
-        return/my_string
-        return/Hello World!
-        return/my_integer + 1
+        return/str, int/("The addition of x and y is: "), (x + y)
+        return/str, str/("Hello, "), (Synapse)
+        return/svar/(string)
     Output:
-        Hello World!
-        Hello World!
-        2
+        The addition of x and y is: 15
+        Hello, Synapse
+        I'm a string!
 
-    - Strings MUST NOT have an "/";
-    - Integers and Floats variables can be operated/compared together even though they have different types;
+    - Normal strings DO NOT show variables. You have to use in the types "svar", stands for "String variable";
+    - Strings CAN BE written with or without the quotation marks or apostrophes ("", ''). However is recomended using with them, you (and the compiler) can manusiete them better;
+    - Integers and Floats variables CAN BE operated/compared together even though they have different types;
+    - You MUST specify the types of values you are returning, if they are more than 1 write them separeted by commas, like the example;
 //----------------------------------------------------------------------//
-1.3* Doing simple mathmatical operations (+, -, *, /):
+1.3 *Doing simple mathmatical operations (+, -, *, /):
     As same as Python you can make adicions with "+", subtractions with "-", multiplications with "*" and divisions with "/". To do other operations like exponatiations, square roots, cubic roots etc. You can see at "Doing complex mathmatical operations"
 
     E.g.:
@@ -48,7 +52,7 @@ Documentation for Synapse(.syn):
         3
         2
 //----------------------------------------------------------------------//
-1.4* Declaring functions (func/name/parameters/(action)):
+1.4 *Declaring functions (func/name/parameters/(action)):
     The method "func/" executes an action, like other functions in general, to write a function you must remember to write the sintax corectly, start with "func/" then insert the function name, parameters(MUST have a least one, even if it's not used) and in the last place the action the function will do(inside parentheses).
 
     E.g.:
@@ -62,9 +66,33 @@ Documentation for Synapse(.syn):
     - Functions doesn't need the parameter to be used in it;
     - The action that the function will execute MUST be inside parentheses;
 //----------------------------------------------------------------------//
-1.4* Making comments (/text):
+1.5 *Calling functions (call/name/parameters):
+    The method "call/" calls a function that was already declarated, write "call/" than the name of the function you want to call. Right after that you say the parameters the function requiers.
+
+    E.g.:
+        func/add/a, b/(return/ a + b)
+        call/add/2, 1
+    Output:
+        3
+
+    - Callers MUST have a least one parameter, even if it's not used in the function;
+//----------------------------------------------------------------------//
+1.6 *Making comments (/text):
     The method "/" creates a comment, the coment don't interact with the rest of the code, will just be there for better organization or location.
 
     E.g.:
         /My comment
+//----------------------------------------------------------------------//
+1.7 *Asking an input from the user (input/value/name/question):
+    The method "input/" asks for an answer from the user. It needs a value(int, str or float), a name or ID(which will permit the creation of a variable with this name) and the question will be the text/question printed for the user to answer.
+
+    E.g.:
+        input/int/age/How old are you
+        return/age
+    Output:
+        How old are you?30(can be other numbers too)
+        30
+    
+    - An "input/" input, can be manusieted like a variable, using it's "name" especified after the third "/". E.g.: return/name;
+    - Inputs JUST ACCEPT the types: "int, str or float";
 //----------------------------------------------------------------------//

@@ -1,9 +1,8 @@
-syn
+/syn/
 
-return/str/(=== Calculate the circumference of a sphere ===)
-input/float/radius/Input the sphere radius: 
-const/tau
-/tau is the same as 2 pi!
-
-func/calculate/null/{return/str, float/("The circumference of the sphere is: "), (tau * radius)}
-call/calculate/null
+func/Square_Root/null/{
+    input/float/number/Insert a number: 
+    math/sqrt/sqrt/number
+    return/str, float, str, float/("The square root of "), (number), (" is "), (sqrt)
+}
+call/Square_Root/null

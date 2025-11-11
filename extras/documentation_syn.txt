@@ -136,6 +136,7 @@ Documentation for Synapse(.syn):
         Sat Dez  25 12:00:00 2026
     
     - Leaving the espace in blank or in a non-reconized especification will result similarly to the example above;
+    - Take a look at extras to see all the especification;
 //----------------------------------------------------------------------//
 2.3 * Using loops (loop/condition/{action executade while the condition is true}):
     The "loop/" method executes an action while condition written is true. Remember using variables in the condition, because they are more likly to not causing the overflow error: "Loop exceeded maximum iterations".
@@ -160,10 +161,69 @@ Documentation for Synapse(.syn):
         ---
 //----------------------------------------------------------------------//
 
-3. Math Operations:
+3. Using "arrays"/sets:
 
 //----------------------------------------------------------------------//
-3.1 * Using simple math operations (value operation value):
+3.1 * Creating a "set" (set/set_name/type_1, type_2/{value_1, value_2}):
+    An array in Synapse is called "set", it's similar to a list of variables, use "set/" followed by the name of this set, the types of values used in the itens.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        return/set/my_set
+    Output:
+        [0] int: 10
+        [1] str: hello
+    
+    - To show an set you can use the "return" followed by the type set, then the set's name;
+    - Remember: Sets start counting at zero;
+
+3.2 * Adding a value in a "set" (add/type/value):
+    To add other elements in a set you can use "add/", followed by your values's type.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        add/my_set/int/20
+        return/set/my_set
+    Output:
+        [0] int: 10
+        [1] str: hello
+        [2] int: 20
+
+3.3 * Removing a value in a "set" (remove/set_name/index):
+    To remove other elements in a set you can use "remove/", followed by your values's index(which starts at 0).
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        remove/my_set/1
+        return/set/my_set
+    Output:
+        [0] int: 10
+
+3.4 * Getting a value in a "set" (get/set_name/index/var_variable):
+    Get obtains the value in the set then creates a variable with the name given in the var_name. The index represents value you want to get.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        get/my_set/0/first_elemet
+        return/svar/first_elemet
+    Output:
+        10
+
+3.5 * Getting the lenght of values in a "set" (size/set_name/var_variable):
+    Size obtains the lenght of values in the set than cerate a (int) variable for it.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        size/my_set/my_set_size
+        return/int/my_set_size
+    Output:
+        2
+//----------------------------------------------------------------------//
+
+4. Math Operations:
+
+//----------------------------------------------------------------------//
+4.1 * Using simple math operations (value operation value):
     Here is a list of simple operations you can do, on returns for example:
 
     - Addition, Use "+";
@@ -172,7 +232,7 @@ Documentation for Synapse(.syn):
     - Divisions, Use "/";
     - Exponatiations, Use "**" (or math/expo/name/value, value);
 //----------------------------------------------------------------------//
-3.2 * Using advanced math operations (math/operation/name/value):
+4.2 * Using advanced math operations (math/operation/name/value):
     Advanced math operations can be manipulate as same as variables, when you use this method an variable is created with the value.
 
     - Square Roots, Use "sqrt";
@@ -181,13 +241,13 @@ Documentation for Synapse(.syn):
     - Ceil (rounding up to the nearest integer), Use "ceil";
     - Rounding to the nearest whole number., Use "round";
 //----------------------------------------------------------------------//
-3.3 * Using advanced math operations between 2 values(math/operation/name/value, value):
+4.3 * Using advanced math operations between 2 values(math/operation/name/value, value):
     Here you see other advanced operations with more than one value.
 
     - Greatest Common Dvisor, Use "gdc";
     - Exponatiation, Use "expo";
 //----------------------------------------------------------------------//
-3.4 * Using math constants (const/constant_name):
+4.4 * Using math constants (const/constant_name):
     Returns the constant specifyed at the "constant_name". You can refere to them like a variable too, all leters lowercase.
 
     - Pi (π), Use "pi";
@@ -196,7 +256,7 @@ Documentation for Synapse(.syn):
 
     - When returning any of those constants AWAYS using in the types "float"
 //----------------------------------------------------------------------//
-3.5 * Exemple:
+4.5 * Exemple:
     return/str/(=== Calculate the circumference of a circle ===)
     input/float/radius/Input the circle radius: 
     const/tau

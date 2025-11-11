@@ -1,8 +1,5 @@
 /syn/
 
-func/Square_Root/null/{
-    input/float/number/Insert a number: 
-    math/sqrt/sqrt/number
-    return/str, float, str, float/("The square root of "), (number), (" is "), (sqrt)
-}
-call/Square_Root/null
+set/my_set/int,str/{10, "hello"}
+size/my_set/my_set_size
+return/int/my_set_size

@@ -30,8 +30,15 @@
             "description": "A code block is missing its opening brace",
             "resolution": "Ensure all blocks start with an opening '{'"
         },
-        "invalid_expression": {
+        "missing_block": {
             "code": "SYN005",
+            "type": "SyntaxError",
+            "message": "A set must have it's values inside {}",
+            "description": "A code block is missing its opening brace e/or ending brace",
+            "resolution": "Ensure all blocks start with an opening '{' and ending '}'"
+        },
+        "invalid_expression": {
+            "code": "SYN006",
             "type": "SyntaxError",
             "message": "Invalid expression: '{expression}'",
             "description": "The mathematical or logical expression contains errors",
@@ -40,14 +47,14 @@
     },
     "variable_errors": {
         "boolean_value": {
-            "code": "SYN006",
+            "code": "SYN007",
             "type": "TypeError",
             "message": "Boolean variables must be 'True' or 'False'",
             "description": "Invalid value for boolean variable",
             "resolution": "Use only 'True' or 'False' (case-sensitive) for boolean variables"
         },
         "loop_variable_reassignment": {
-            "code": "SYN007",
+            "code": "SYN008",
             "type": "SyntaxWarning",
             "message": "Potential loop variable reassignment detected: '{variable}'",
             "description": "Variable name may conflict with interpreter internal variables",
@@ -56,21 +63,21 @@
     },
     "function_errors": {
         "invalid_definition": {
-            "code": "SYN008",
+            "code": "SYN009",
             "type": "SyntaxError",
             "message": "Invalid function definition format",
             "description": "Function declaration does not follow the required syntax",
             "resolution": "Use: func/name/parameter1,parameter2/{...code...}"
         },
         "parameter_mismatch": {
-            "code": "SYN009",
+            "code": "SYN010",
             "type": "SyntaxError",
             "message": "Function '{function}' expects {expected} parameters, but {provided} were provided",
             "description": "Function call has incorrect number of arguments",
             "resolution": "Check the function definition and provide the correct number of parameters"
         },
         "function_not_found": {
-            "code": "SYN010",
+            "code": "SYN011",
             "type": "NameError",
             "message": "Function '{function}' not found or does not exist",
             "description": "Attempted to call an undefined function",
@@ -79,14 +86,14 @@
     },
     "return_errors": {
         "missing_content": {
-            "code": "SYN011",
+            "code": "SYN012",
             "type": "SyntaxError",
             "message": "Missing content after return types",
             "description": "Return statement is incomplete",
             "resolution": "Use: return/type1,type2/(value1),(value2)"
         },
         "type_count_mismatch": {
-            "code": "SYN012",
+            "code": "SYN013",
             "type": "SyntaxError",
             "message": "Return expects {expected} values of types {types}, but found {found} values: {values}",
             "description": "Number of return types doesn't match number of values",
@@ -95,7 +102,7 @@
     },
     "input_errors": {
         "conversion_failed": {
-            "code": "SYN013",
+            "code": "SYN014",
             "type": "ValueError",
             "message": "Could not convert input to {target_type}",
             "description": "User input could not be converted to the specified type",
@@ -104,14 +111,14 @@
     },
     "loop_errors": {
         "max_iterations_exceeded": {
-            "code": "SYN014",
+            "code": "SYN015",
             "type": "OverflowError",
             "message": "Loop exceeded maximum iterations ({max_iterations})",
             "description": "Loop executed too many times, possible infinite loop",
             "resolution": "Check loop condition and ensure it eventually becomes false"
         },
         "invalid_condition": {
-            "code": "SYN015",
+            "code": "SYN016",
             "type": "ValueError",
             "message": "Invalid condition: '{condition}'. Details: {details}",
             "description": "Loop or if condition contains errors",
@@ -120,21 +127,21 @@
     },
     "math_errors": {
         "invalid_math_value": {
-            "code": "SYN016",
+            "code": "SYN017",
             "type": "ValueError",
             "message": "Invalid value '{value}' for mathematical operation",
             "description": "Mathematical operation received invalid input",
             "resolution": "Use only numeric values (int/float) for math operations"
         },
         "invalid_operation": {
-            "code": "SYN017",
+            "code": "SYN018",
             "type": "SyntaxError",
             "message": "Mathematical operation '{operation}' not recognized",
             "description": "Unsupported mathematical operation",
             "resolution": "Use one of: sqrt, cbrt, fac, round, floor, ceil, expo, gcd, log"
         },
         "parameter_count": {
-            "code": "SYN018",
+            "code": "SYN019",
             "type": "SyntaxError",
             "message": "Operation '{operation}' requires exactly {required} value(s), but {provided} were provided",
             "description": "Incorrect number of parameters for mathematical operation",
@@ -143,25 +150,39 @@
     },
     "system_errors": {
         "unrecognized_element": {
-            "code": "SYN019",
+            "code": "SYN020",
             "type": "SyntaxError",
             "message": "Unrecognized syntax element: '{element}'",
             "description": "Unknown command or syntax element encountered",
             "resolution": "Check documentation for supported commands and syntax"
         },
         "invalid_config": {
-            "code": "SYN020",
+            "code": "SYN021",
             "type": "SyntaxError",
             "message": "Invalid configuration option",
             "description": "Unsupported configuration command",
             "resolution": "Use: config/documentation, config/error, or config/config"
         },
         "constant_not_found": {
-            "code": "SYN021",
+            "code": "SYN022",
             "type": "NameError",
             "message": "Constant '{constant}' not recognized",
             "description": "Unknown mathematical constant",
             "resolution": "Use one of: pi, e, tau"
+        },
+        "set_not_found": {
+            "code": "SYN023",
+            "type": "NameError",
+            "message": "Set '{set_name}' not found",
+            "description": "Attempted to access a set that does not exist",
+            "resolution": "Check set name spelling and ensure it's created before access"
+        },
+        "index_out_of_range": {
+            "code": "SYN024",
+            "type": "IndexError",
+            "message": "Index {index} is out of range. Maximum index is {max_index}",
+            "description": "Attempted to access an element with an invalid index",
+            "resolution": "Use an index between 0 and the set size minus one"
         }
     }
 }

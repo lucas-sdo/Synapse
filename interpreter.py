@@ -27,17 +27,26 @@ def ler_Syn(nome):
         return codigo
 
 
-with open('errors.json', 'r', encoding='utf-8') as f:
+with open(r'extras\errors.json', 'r', encoding='utf-8') as f:
     errors_data = json.load(f)
 
 
 def get_error(category, error_name, **kwargs):
-    """Retorna informações do erro formatadas"""
-    if category in errors_data and error_name in errors_data[category]:
-        error_info = errors_data[category][error_name]
-        message = error_info["message"].format(**kwargs)
-        return f"{error_info['code']}: {message}"
-    return f"SYN000: Error '{error_name}' not found in category '{category}'"
+    try:
+        if category in errors_data and error_name in errors_data[category]:
+            error_info = errors_data[category][error_name]
+            message = error_info["message"]
+
+            if "{" in message and "}" in message:
+                try:
+                    message = message.format(**kwargs)
+                except KeyError as e:
+                    message = error_info["message"]
+
+            return f"{error_info['code']}: {message}"
+        return f"SYN000: Error '{error_name}' not found in category '{category}'"
+    except Exception as e:
+        return f"SYN000: Error formatting message: {str(e)}"
 
 
 conteudo = ler_Syn("exemplo.syn")
@@ -45,6 +54,7 @@ conteudo = ler_Syn("exemplo.syn")
 # ---------- Interpretador ---------- #
 variaveis = {}
 funcoes = {}
+sets = {}
 
 
 def encontrar_chave_fechamento(texto, inicio_busca):
@@ -76,6 +86,129 @@ def dividir_argumentos(conteudo):
     if atual:
         partes.append(atual.strip())
     return partes
+
+
+def processar_valor_set(valor_str, tipo):
+    valor_str = valor_str.strip()
+
+    if tipo == "str":
+        if (valor_str.startswith('"') and valor_str.endswith('"')) or \
+                (valor_str.startswith("'") and valor_str.endswith("'")):
+            return valor_str[1:-1]
+        return valor_str
+
+    elif tipo == "svar":
+        # Para svar, substituir variáveis no valor
+        valor_processado = valor_str
+        for var_name, var_value in variaveis.items():
+            if isinstance(var_value, tuple):
+                valor_real = var_value[0]
+            else:
+                valor_real = var_value
+            # Substituir o nome da variável pelo seu valor
+            valor_processado = valor_processado.replace(
+                var_name, str(valor_real))
+
+        # Remover aspas se existirem
+        if (valor_processado.startswith('"') and valor_processado.endswith('"')) or \
+           (valor_processado.startswith("'") and valor_processado.endswith("'")):
+            return valor_processado[1:-1]
+        return valor_processado
+
+    elif tipo == "int":
+        # Para int, primeiro substituir variáveis e depois converter
+        for var_name, var_value in variaveis.items():
+            if isinstance(var_value, tuple):
+                valor_real = var_value[0]
+            else:
+                valor_real = var_value
+            valor_str = valor_str.replace(var_name, str(valor_real))
+        return int(valor_str)
+
+    elif tipo == "float":
+        # Para float, primeiro substituir variáveis e depois converter
+        for var_name, var_value in variaveis.items():
+            if isinstance(var_value, tuple):
+                valor_real = var_value[0]
+            else:
+                valor_real = var_value
+            valor_str = valor_str.replace(var_name, str(valor_real))
+        return float(valor_str)
+
+    elif tipo == "bool":
+        if valor_str == "True":
+            return True
+        elif valor_str == "False":
+            return False
+        else:
+            raise TypeError(get_error("variable_errors", "boolean_value"))
+    else:
+        raise TypeError(get_error("syntax_errors", "invalid_type", tipo=tipo))
+
+
+def processar_valor_set(valor_str, tipo):
+    valor_str = valor_str.strip()
+
+    if tipo == "str":
+        if (valor_str.startswith('"') and valor_str.endswith('"')) or \
+                (valor_str.startswith("'") and valor_str.endswith("'")):
+            return valor_str[1:-1]
+        return valor_str
+
+    elif tipo == "svar":
+        # Para svar, substituir variáveis no valor
+        valor_processado = valor_str
+        for var_name, var_value in variaveis.items():
+            if isinstance(var_value, tuple):
+                valor_real = var_value[0]
+            else:
+                valor_real = var_value
+            # Substituir o nome da variável pelo seu valor
+            valor_processado = valor_processado.replace(
+                var_name, str(valor_real))
+
+        # Remover aspas se existirem
+        if (valor_processado.startswith('"') and valor_processado.endswith('"')) or \
+           (valor_processado.startswith("'") and valor_processado.endswith("'")):
+            return valor_processado[1:-1]
+        return valor_processado
+
+    elif tipo == "int":
+        # Para int, primeiro substituir variáveis e depois converter
+        for var_name, var_value in variaveis.items():
+            if isinstance(var_value, tuple):
+                valor_real = var_value[0]
+            else:
+                valor_real = var_value
+            valor_str = valor_str.replace(var_name, str(valor_real))
+        return int(valor_str)
+
+    elif tipo == "float":
+        # Para float, primeiro substituir variáveis e depois converter
+        for var_name, var_value in variaveis.items():
+            if isinstance(var_value, tuple):
+                valor_real = var_value[0]
+            else:
+                valor_real = var_value
+            valor_str = valor_str.replace(var_name, str(valor_real))
+        return float(valor_str)
+
+    elif tipo == "bool":
+        if valor_str == "True":
+            return True
+        elif valor_str == "False":
+            return False
+        else:
+            raise TypeError(get_error("variable_errors", "boolean_value"))
+    else:
+        raise TypeError(get_error("syntax_errors", "invalid_type", tipo=tipo))
+
+
+def obter_set(nome):
+    if nome not in sets:
+        raise NameError(get_error("system_errors",
+                        "set_not_found", set_name=nome))
+    return sets[nome]
 
 
 def interpretar(codigo):
@@ -149,6 +282,162 @@ def interpretar(codigo):
 
                 variaveis[nome] = (valor, tipo)
 
+            i += 1
+
+        elif linha.startswith("set/"):
+            partes = linha.split("/")
+            if len(partes) < 4:
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function="set", expected="at least 3", provided=len(partes)-1))
+
+            nome = partes[1]
+            tipos = partes[2]
+            valores = partes[3]
+
+            if not (valores.startswith("{") and valores.endswith("}")):
+                raise SyntaxError(
+                    get_error("syntax_errors", "missing_block"))
+
+            valores = valores[1:-1].strip()
+
+            tipos_lista = [t.strip() for t in tipos.split(",")]
+            valores_lista = dividir_argumentos(valores)
+
+            if len(tipos_lista) != len(valores_lista):
+                raise SyntaxError(get_error("return_errors", "type_count_mismatch",
+                                            expected=len(tipos_lista), types=tipos_lista,
+                                            found=len(valores_lista), values=valores_lista))
+
+            valores_processados = []
+            for tipo, valor_str in zip(tipos_lista, valores_lista):
+                try:
+                    valor_processado = processar_valor_set(valor_str, tipo)
+                    valores_processados.append(valor_processado)
+                except Exception as e:
+                    raise ValueError(
+                        get_error("math_errors", "invalid_math_value", value=valor_str))
+
+            sets[nome] = {
+                "tipos": tipos_lista,
+                "valores": valores_processados
+            }
+
+            print(f"Set '{nome}' criado com sucesso: {valores_processados}")
+            i += 1
+
+        elif linha.startswith("add/"):
+            partes = linha.split("/")
+            if len(partes) < 4:
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function="add", expected="at least 3", provided=len(partes)-1))
+
+            nome_set = partes[1]
+            tipo = partes[2]
+            valor_str = partes[3]
+
+            # Processar o valor baseado no tipo
+            try:
+                valor_processado = processar_valor_set(valor_str, tipo)
+            except Exception as e:
+                raise ValueError(
+                    get_error("math_errors", "invalid_math_value", value=valor_str))
+
+            # Adicionar ao set
+            if nome_set in sets:
+                sets[nome]["tipos"].append(tipo)
+                sets[nome]["valores"].append(valor_processado)
+                print(
+                    f"Elemento '{valor_processado}' adicionado ao set '{nome_set}'")
+            else:
+                # Se o set não existe, criar um novo
+                sets[nome_set] = {
+                    "tipos": [tipo],
+                    "valores": [valor_processado]
+                }
+                print(
+                    f"Set '{nome_set}' criado com elemento: {valor_processado}")
+
+            i += 1
+
+        elif linha.startswith("remove/"):
+            partes = linha.split("/")
+            if len(partes) < 3:
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function="remove", expected="at least 2", provided=len(partes)-1))
+
+            nome_set = partes[1]
+            indice_str = partes[2]
+
+            try:
+                if indice_str in variaveis:
+                    indice = variaveis[indice_str][0]
+                else:
+                    indice = int(indice_str)
+            except ValueError:
+                raise ValueError(
+                    get_error("math_errors", "invalid_math_value", value=indice_str))
+
+            set_data = obter_set(nome_set)
+
+            if indice < 0 or indice >= len(set_data["valores"]):
+                raise IndexError(get_error("system_errors", "index_out_of_range",
+                                           index=indice, max_index=len(set_data["valores"])-1))
+
+            valor_removido = set_data["valores"].pop(indice)
+            tipo_removido = set_data["tipos"].pop(indice)
+
+            print(
+                f"Elemento '{valor_removido}' removido do set '{nome_set}' na posição {indice}")
+            i += 1
+
+        elif linha.startswith("get/"):
+            partes = linha.split("/")
+            if len(partes) < 4:
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function="get", expected="at least 3", provided=len(partes)-1))
+
+            nome_set = partes[1]
+            indice_str = partes[2]
+            nome_variavel = partes[3]
+
+            try:
+                if indice_str in variaveis:
+                    indice = variaveis[indice_str][0]
+                else:
+                    indice = int(indice_str)
+            except ValueError:
+                raise ValueError(
+                    get_error("math_errors", "invalid_math_value", value=indice_str))
+
+            set_data = obter_set(nome_set)
+
+            if indice < 0 or indice >= len(set_data["valores"]):
+                raise IndexError(get_error("system_errors", "index_out_of_range",
+                                           index=indice, max_index=len(set_data["valores"])-1))
+
+            valor = set_data["valores"][indice]
+            tipo = set_data["tipos"][indice]
+
+            variaveis[nome_variavel] = (valor, tipo)
+            print(
+                f"Valor '{valor}' do set '{nome_set}'[{indice}] armazenado em '{nome_variavel}'")
+            i += 1
+
+        elif linha.startswith("size/"):
+            partes = linha.split("/")
+            if len(partes) < 3:
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function="size", expected="at least 2", provided=len(partes)-1))
+
+            nome_set = partes[1]
+            nome_variavel = partes[2]
+
+            set_data = obter_set(nome_set)
+            tamanho = len(set_data["valores"])
+
+            variaveis[nome_variavel] = (tamanho, "int")
+            print(
+                f"Tamanho do set '{nome_set}': {tamanho} (armazenado em '{nome_variavel}')")
             i += 1
 
         elif linha.startswith("if/"):
@@ -272,6 +561,14 @@ def interpretar(codigo):
                         elemento = elemento.replace(var_name, str(valor_real))
                     valor = float(eval(elemento.strip('/')))
 
+                elif tipo == "set":
+                    nome_set = partes_totais[2]
+                    set_data = obter_set(nome_set)
+
+                    for j, (tipo, valor) in enumerate(zip(set_data["tipos"], set_data["valores"])):
+                        print(f"[{j}] {tipo}: {valor}")
+                    continue
+
                 elif tipo == "bool":
                     for var_name, var_value in variaveis.items():
                         if isinstance(var_value, tuple):
@@ -285,7 +582,8 @@ def interpretar(codigo):
                                     "invalid_type", tipo=tipo))
 
                 resultado_final += str(valor)
-            print(resultado_final)
+                if tipo != "set":
+                    print(resultado_final)
             i += 1
 
         elif linha.startswith("//"):

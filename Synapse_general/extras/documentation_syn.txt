@@ -73,7 +73,9 @@ Documentation for Synapse(.syn):
     The method "call/" calls a function that was already declarated, write "call/" than the name of the function you want to call. Right after that you say the parameters the function requiers.
 
     E.g.:
-        func/add/a, b/{return/int/ a + b}
+        func/add/a, b/{
+            return/int/ a + b
+        }
         call/add/2, 1
     Output:
         3
@@ -100,17 +102,17 @@ Documentation for Synapse(.syn):
     - Inputs JUST ACCEPT the types: "int, str or float";
 //----------------------------------------------------------------------//
 1.8 * Exemple:
-    /Little exemple about simple actions on Synapse
+    //Little exemple about simple actions on Synapse;
 
-    input/str/name/What's your name?
-    input/int/age/What's your age?
-    var/str/next_year/"Next year "
+    input/str/name/What's your name?;
+    input/int/age/What's your age?;
+    var/str/next_year/"Next year ";
 
-    func/greeting/null/{return/svar, svar, str, int/(next_year), (name), (", will have "), (age + 1)}
-    call/greeting/null
+    func/greeting/null/{return/svar, svar, str, int/(next_year), (name), (", will have "), (age + 1)};
+    call/greeting/null;
 
-    /Output:
-    /Next year John Doe, will have 31 (different for different inputs)
+    //Output:;
+    //Next year John Doe, will have 31 (different for different inputs);
 //----------------------------------------------------------------------//
 
 2. Other Methods:
@@ -138,7 +140,18 @@ Documentation for Synapse(.syn):
     - Leaving the espace in blank or in a non-reconized especification will result similarly to the example above;
     - Take a look at extras to see all the especification;
 //----------------------------------------------------------------------//
-2.3 * Using loops (loop/condition/{action executade while the condition is true}):
+2.3 * Using Timers (date/especification):
+    Use "date/" to see any time-related data about your region. You can specify the especifications in the second part. Look at the extras to see every especification.
+
+    E.g.:
+        date/
+    Output:
+        Sat Dez  25 12:00:00 2026
+    
+    - Leaving the espace in blank or in a non-reconized especification will result similarly to the example above;
+    - Take a look at extras to see all the especification;
+//----------------------------------------------------------------------//
+2.4 * Using loops (loop/condition/{action executade while the condition is true}):
     The "loop/" method executes an action while condition written is true. Remember using variables in the condition, because they are more likly to not causing the overflow error: "Loop exceeded maximum iterations".
 
     E.g.:
@@ -159,6 +172,33 @@ Documentation for Synapse(.syn):
         Interaction:
         3
         ---
+//----------------------------------------------------------------------//
+2.5 * Using Intervals (every/wait_time/func_exemplo):
+    The "every/" method calls a function every "wait_time".
+
+    E.g.:
+        func/add/a, b/{
+            return/int/ a + b
+        }
+        every/1/add/1, 2
+    Output:
+        3
+        3
+        3
+        ...
+    - The "wait_time" measure is in seconds;
+    - The interval goes "forever";
+//----------------------------------------------------------------------//
+2.6 * Using Wait Time (after/wait_time/func_exemplo):
+    The "every/" method calls a function after waiting the for the wait_time.
+
+    E.g.:
+        func/add/a, b/{
+            return/int/ a + b
+        }
+        after/1/add/1, 2
+    Output:
+        3
 //----------------------------------------------------------------------//
 
 3. Using "arrays"/sets:
@@ -281,6 +321,8 @@ EXTRAS:
 
         - "svar", similar to "str" but this one in "returns" shows a string variable, not just a simple string.
 
+        - "set", prints a set of values in a "return", mostly used for debuging.
+
     II. Operations ->
         - "==" the same as "is equal to", used in "if/";
 
@@ -335,6 +377,7 @@ EXTRAS:
 
         1. Do not to name two variable with the same name, it'll cause an error;
         2. Remember when compiling syn files, they MUST start with "/syn/";
+        3. Sets start counting at 0;
 
     V  Examples Gallery -> 
         - Calculator:
@@ -399,5 +442,4 @@ EXTRAS:
                 return/str, float, str, float/("The square root of "), (number), (" is "), (sqrt)
             }
             call/Square_Root/null
-
 //----------------------------------------------------------------------//

@@ -1,8 +1,7 @@
 import math
+import threading
 import datetime
 import json
-# ---------- Sistema de arquivo ----------
-# Synapse
 
 
 def salvar_Syn(nome, codigo: str):
@@ -27,7 +26,7 @@ def ler_Syn(nome):
         return codigo
 
 
-with open(r'extras\errors.json', 'r', encoding='utf-8') as f:
+with open(r'Synapse_general\extras\errors.json', 'r', encoding='utf-8') as f:
     errors_data = json.load(f)
 
 
@@ -49,7 +48,7 @@ def get_error(category, error_name, **kwargs):
         return f"SYN000: Error formatting message: {str(e)}"
 
 
-conteudo = ler_Syn("exemplo.syn")
+conteudo = ler_Syn(r"Synapse_general\exemplo.syn")
 
 # ---------- Interpretador ---------- #
 variaveis = {}
@@ -156,25 +155,21 @@ def processar_valor_set(valor_str, tipo):
         return valor_str
 
     elif tipo == "svar":
-        # Para svar, substituir variáveis no valor
         valor_processado = valor_str
         for var_name, var_value in variaveis.items():
             if isinstance(var_value, tuple):
                 valor_real = var_value[0]
             else:
                 valor_real = var_value
-            # Substituir o nome da variável pelo seu valor
             valor_processado = valor_processado.replace(
                 var_name, str(valor_real))
 
-        # Remover aspas se existirem
         if (valor_processado.startswith('"') and valor_processado.endswith('"')) or \
            (valor_processado.startswith("'") and valor_processado.endswith("'")):
             return valor_processado[1:-1]
         return valor_processado
 
     elif tipo == "int":
-        # Para int, primeiro substituir variáveis e depois converter
         for var_name, var_value in variaveis.items():
             if isinstance(var_value, tuple):
                 valor_real = var_value[0]
@@ -184,7 +179,6 @@ def processar_valor_set(valor_str, tipo):
         return int(valor_str)
 
     elif tipo == "float":
-        # Para float, primeiro substituir variáveis e depois converter
         for var_name, var_value in variaveis.items():
             if isinstance(var_value, tuple):
                 valor_real = var_value[0]
@@ -212,6 +206,7 @@ def obter_set(nome):
 
 
 def interpretar(codigo):
+    """Interprets the forneced Synapse code."""
     linhas = [linha.rstrip() for linha in codigo.splitlines()]
 
     i = 0
@@ -321,8 +316,6 @@ def interpretar(codigo):
                 "tipos": tipos_lista,
                 "valores": valores_processados
             }
-
-            print(f"Set '{nome}' criado com sucesso: {valores_processados}")
             i += 1
 
         elif linha.startswith("add/"):
@@ -335,21 +328,18 @@ def interpretar(codigo):
             tipo = partes[2]
             valor_str = partes[3]
 
-            # Processar o valor baseado no tipo
             try:
                 valor_processado = processar_valor_set(valor_str, tipo)
             except Exception as e:
                 raise ValueError(
                     get_error("math_errors", "invalid_math_value", value=valor_str))
 
-            # Adicionar ao set
             if nome_set in sets:
                 sets[nome]["tipos"].append(tipo)
                 sets[nome]["valores"].append(valor_processado)
                 print(
                     f"Elemento '{valor_processado}' adicionado ao set '{nome_set}'")
             else:
-                # Se o set não existe, criar um novo
                 sets[nome_set] = {
                     "tipos": [tipo],
                     "valores": [valor_processado]
@@ -419,8 +409,6 @@ def interpretar(codigo):
             tipo = set_data["tipos"][indice]
 
             variaveis[nome_variavel] = (valor, tipo)
-            print(
-                f"Valor '{valor}' do set '{nome_set}'[{indice}] armazenado em '{nome_variavel}'")
             i += 1
 
         elif linha.startswith("size/"):
@@ -436,8 +424,6 @@ def interpretar(codigo):
             tamanho = len(set_data["valores"])
 
             variaveis[nome_variavel] = (tamanho, "int")
-            print(
-                f"Tamanho do set '{nome_set}': {tamanho} (armazenado em '{nome_variavel}')")
             i += 1
 
         elif linha.startswith("if/"):
@@ -577,13 +563,14 @@ def interpretar(codigo):
                             valor_real = var_value
                         elemento = elemento.replace(var_name, str(valor_real))
                     valor = bool(eval(elemento))
+
                 else:
                     raise TypeError(get_error("syntax_errors",
                                     "invalid_type", tipo=tipo))
 
                 resultado_final += str(valor)
-                if tipo != "set":
-                    print(resultado_final)
+
+            print(resultado_final)
             i += 1
 
         elif linha.startswith("//"):
@@ -817,6 +804,119 @@ def interpretar(codigo):
                 print(data.strftime("%c"))
             i += 1
 
+        elif linha.startswith("every/"):
+            # every/wait_time/func_exemplo
+            partes = linha.split("/")
+            wait_time_str = partes[1]
+            parametros_reais = partes[3].split(",") if len(partes) > 2 else []
+            if not parametros_reais:
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function="every", expected="at least 2", provided=len(partes)-1))
+            int(wait_time_str)
+            try:
+                int(wait_time_str)
+            except Exception as e:
+                raise ValueError(
+                    get_error("type_errors", "type_mismatch", expression=wait_time_str))
+
+            func_name = partes[2]
+            if func_name not in funcoes:
+                raise NameError(get_error("function_errors",
+                                "function_not_found", function=func_name))
+            else:
+                parametros_formais, codigo_func = funcoes[func_name]
+
+                if len(parametros_reais) != len(parametros_formais):
+                    raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                                function=nome_func, expected=len(parametros_formais), provided=len(parametros_reais)))
+
+                codigo_modificado = codigo_func
+
+                for param_formal, param_real in zip(parametros_formais, parametros_reais):
+                    if param_real in variaveis:
+                        entry = variaveis[param_real]
+                        if isinstance(entry, tuple) and len(entry) == 2:
+                            valor_real, tipo_entry = entry
+                        else:
+                            valor_real = entry
+                            tipo_entry = None
+
+                        if tipo_entry == "str":
+                            replacement = f'"{valor_real}"'
+                        else:
+                            replacement = str(valor_real)
+                        codigo_modificado = codigo_modificado.replace(
+                            param_formal, replacement)
+                    else:
+                        codigo_modificado = codigo_modificado.replace(
+                            param_formal, param_real)
+
+                def set_interval(func, interval):
+                    def wrapper():
+                        set_interval(interpretar(codigo_modificado), interval)
+                    timer = threading.Timer(interval, wrapper)
+                    timer.start()
+                    return timer
+
+                set_interval(interpretar(codigo_modificado),
+                             int(wait_time_str))
+
+            i += 1
+
+        elif linha.startswith("after/"):
+            partes = linha.split("/")
+            if len(partes) < 3:
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function="after", expected="at least 2", provided=len(partes)-1))
+
+            wait_time_str = partes[1]
+            func_name = partes[2]
+            parametros_reais = partes[3].split(",") if len(partes) > 3 else []
+
+            try:
+                wait_time = int(wait_time_str)
+            except ValueError:
+                raise ValueError(
+                    get_error("type_errors", "type_mismatch", expression=wait_time_str))
+
+            if func_name not in funcoes:
+                raise NameError(get_error("function_errors",
+                                "function_not_found", function=func_name))
+
+            parametros_formais, codigo_func = funcoes[func_name]
+
+            if len(parametros_reais) != len(parametros_formais):
+                raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                            function=func_name, expected=len(parametros_formais), provided=len(parametros_reais)))
+
+            codigo_modificado = codigo_func
+
+            for param_formal, param_real in zip(parametros_formais, parametros_reais):
+                if param_real in variaveis:
+                    entry = variaveis[param_real]
+                    if isinstance(entry, tuple) and len(entry) == 2:
+                        valor_real, tipo_entry = entry
+                    else:
+                        valor_real = entry
+                        tipo_entry = None
+
+                    if tipo_entry == "str":
+                        replacement = f'"{valor_real}"'
+                    else:
+                        replacement = str(valor_real)
+                    codigo_modificado = codigo_modificado.replace(
+                        param_formal, replacement)
+                else:
+                    codigo_modificado = codigo_modificado.replace(
+                        param_formal, param_real)
+
+            def executar_depois():
+                interpretar(codigo_modificado)
+
+            timer = threading.Timer(wait_time, executar_depois)
+            timer.start()
+            i += 1
+
         elif linha.startswith("math/"):
             partes = linha.split("/")
             if len(partes) < 4:
@@ -844,7 +944,6 @@ def interpretar(codigo):
                     raise ValueError(
                         get_error("math_errors", "invalid_math_value", value=valor))
 
-            # Operações que precisam de 1 valor
             if operacao in ["sqrt", "cbrt", "fac", "round", "floor", "ceil"]:
                 if len(valores_processados) != 1:
                     raise SyntaxError(get_error("math_errors", "parameter_count",
@@ -853,8 +952,7 @@ def interpretar(codigo):
                 if operacao == "sqrt":
                     resultado = math.sqrt(valores_processados[0])
                 elif operacao == "cbrt":
-                    # math.cbrt não existe no Python padrão
-                    resultado = valores_processados[0] ** (1/3)
+                    resultado = math.cbrt(valores_processados[0])
                 elif operacao == "fac":
                     resultado = math.factorial(int(valores_processados[0]))
                 elif operacao == "round":
@@ -864,7 +962,6 @@ def interpretar(codigo):
                 elif operacao == "ceil":
                     resultado = math.ceil(valores_processados[0])
 
-            # Operações que precisam de 2 valores
             elif operacao in ["expo", "gcd"]:
                 if len(valores_processados) != 2:
                     raise SyntaxError(get_error("math_errors", "parameter_count",
@@ -897,22 +994,6 @@ def interpretar(codigo):
         elif linha.startswith("/syn/"):
             i += 1
             continue
-
-        elif linha.startswith("config/"):
-            partes = linha.split("/")
-            tipo = partes[1]
-            if tipo == "documentation":
-                with open('documentation_original.txt', 'r') as arquivo:
-                    conteudo = arquivo.read()
-                    with open('documentation_syn.txt', 'w') as arquivo:
-                        return arquivo.write(conteudo)
-            elif tipo == "error":
-                return print('error')
-            elif tipo == "config":
-                return print('There is no config for now!')
-            else:
-                raise SyntaxError(
-                    'Error: Method config needs a valid configuration name')
 
         else:
             element = linha.split()[0] if linha.split() else linha

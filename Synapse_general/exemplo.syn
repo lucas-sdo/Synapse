@@ -1,0 +1,6 @@
+/syn/
+
+func/add/a, b/{
+    return/int/ a + b
+}
+after/1/add/1, 2

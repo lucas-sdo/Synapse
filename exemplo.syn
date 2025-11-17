@@ -1,5 +1,0 @@
-/syn/
-
-set/my_set/int,str/{10, "hello"}
-size/my_set/my_set_size
-return/int/my_set_size

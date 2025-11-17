@@ -184,5 +184,14 @@
             "description": "Attempted to access an element with an invalid index",
             "resolution": "Use an index between 0 and the set size minus one"
         }
+    },
+    "type_errors": {
+        "type_mismatch": {
+            "code": "SYN025",
+            "type": "TypeError",
+            "message": "Value recived is not int",
+            "description": "Remember using only numbers for int variables",
+            "resolution": "Ensure variable assignments and return values match their declared types"
+        }
     }
 }

@@ -216,7 +216,7 @@ Documentation for Synapse(.syn):
     
     - To show an set you can use the "return" followed by the type set, then the set's name;
     - Remember: Sets start counting at zero;
-
+//----------------------------------------------------------------------//
 3.2 * Adding a value in a "set" (add/type/value):
     To add other elements in a set you can use "add/", followed by your values's type.
 
@@ -228,7 +228,7 @@ Documentation for Synapse(.syn):
         [0] int: 10
         [1] str: hello
         [2] int: 20
-
+//----------------------------------------------------------------------//
 3.3 * Removing a value in a "set" (remove/set_name/index):
     To remove other elements in a set you can use "remove/", followed by your values's index(which starts at 0).
 
@@ -238,7 +238,7 @@ Documentation for Synapse(.syn):
         return/set/my_set
     Output:
         [0] int: 10
-
+//----------------------------------------------------------------------//
 3.4 * Getting a value in a "set" (get/set_name/index/var_variable):
     Get obtains the value in the set then creates a variable with the name given in the var_name. The index represents value you want to get.
 
@@ -248,7 +248,7 @@ Documentation for Synapse(.syn):
         return/svar/first_elemet
     Output:
         10
-
+//----------------------------------------------------------------------//
 3.5 * Getting the lenght of values in a "set" (size/set_name/var_variable):
     Size obtains the lenght of values in the set than cerate a (int) variable for it.
 

@@ -227,6 +227,7 @@ def interpretar(codigo):
                     get_error("variable_errors", "loop_variable_reassignment", variable=nome))
             if nome in variaveis:
                 tipo_existente = variaveis[nome][1]
+
                 if tipo_existente in ["int", "float"] and any(op in valor for op in ["+", "-", "*", "/", "**"]):
                     expressao_avaliar = valor
                     for var_name, var_value in variaveis.items():
@@ -236,7 +237,6 @@ def interpretar(codigo):
                             valor_real = var_value
                         expressao_avaliar = expressao_avaliar.replace(
                             var_name, str(valor_real))
-
                     try:
                         valor = eval(expressao_avaliar)
                     except:
@@ -268,9 +268,17 @@ def interpretar(codigo):
                 elif tipo == "str":
                     valor = valor
                 elif tipo == "int":
-                    valor = int(valor)
+                    try:
+                        valor = int(valor)
+                    except:
+                        raise ValueError(
+                            get_error("type_errors", "type_mismatch", value=valor))
                 elif tipo == "float":
-                    valor = float(valor)
+                    try:
+                        valor = float(valor)
+                    except:
+                        raise ValueError(
+                            get_error("type_errors", "type_mismatch", value=valor))
                 else:
                     raise TypeError(get_error("syntax_errors",
                                     "invalid_type", tipo=tipo))
@@ -278,6 +286,120 @@ def interpretar(codigo):
                 variaveis[nome] = (valor, tipo)
 
             i += 1
+
+        elif linha.startswith("str/"):
+            partes = linha.split("/")
+            operacao = partes[1]
+            var_name_origem = partes[2]
+            var_name_destino = partes[3]
+
+            if var_name_origem not in variaveis:
+                raise NameError(get_error("variable_errors",
+                                "variable_not_found", variable=var_name_origem))
+
+            valor_atual, tipo_atual = variaveis[var_name_origem]
+
+            if tipo_atual != "str":
+                raise TypeError(get_error("type_errors",
+                                "type_mismatch", expression=var_name_origem))
+
+            if isinstance(valor_atual, str):
+                if (valor_atual.startswith('"') and valor_atual.endswith('"')) or \
+                        (valor_atual.startswith("'") and valor_atual.endswith("'")):
+                    valor_atual = valor_atual[1:-1]
+
+            novo_valor = None
+
+            if operacao == "upper":
+                novo_valor = valor_atual.upper()
+
+            elif operacao == "lower":
+                novo_valor = valor_atual.lower()
+
+            elif operacao == "add":
+                if len(partes) < 5:
+                    raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                                function="str/add", expected="at least 4", provided=len(partes)-1))
+
+                texto_adicionar = partes[4]
+
+                for nome_var, (valor_var, tipo_var) in variaveis.items():
+                    if isinstance(valor_var, str):
+                        if (valor_var.startswith('"') and valor_var.endswith('"')) or \
+                                (valor_var.startswith("'") and valor_var.endswith("'")):
+                            valor_var = valor_var[1:-1]
+                        texto_adicionar = texto_adicionar.replace(
+                            nome_var, valor_var)
+
+                if (texto_adicionar.startswith('"') and texto_adicionar.endswith('"')) or \
+                        (texto_adicionar.startswith("'") and texto_adicionar.endswith("'")):
+                    texto_adicionar = texto_adicionar[1:-1]
+
+                novo_valor = valor_atual + texto_adicionar
+
+            elif operacao == "change":
+                if len(partes) < 6:
+                    raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                                function="str/change", expected="at least 5", provided=len(partes)-1))
+
+                item_1 = partes[4]
+                item_2 = partes[5]
+
+                for nome_var, (valor_var, tipo_var) in variaveis.items():
+                    if isinstance(valor_var, str):
+                        if (valor_var.startswith('"') and valor_var.endswith('"')) or \
+                                (valor_var.startswith("'") and valor_var.endswith("'")):
+                            valor_var = valor_var[1:-1]
+                        item_1 = item_1.replace(nome_var, valor_var)
+                        item_2 = item_2.replace(nome_var, valor_var)
+
+                if (item_1.startswith('"') and item_1.endswith('"')) or \
+                        (item_1.startswith("'") and item_1.endswith("'")):
+                    item_1 = item_1[1:-1]
+                if (item_2.startswith('"') and item_2.endswith('"')) or \
+                        (item_2.startswith("'") and item_2.endswith("'")):
+                    item_2 = item_2[1:-1]
+
+                novo_valor = valor_atual.replace(item_1, item_2)
+
+            elif operacao == "divide":
+                if len(partes) < 6:
+                    raise SyntaxError(get_error("function_errors", "parameter_mismatch",
+                                                function="str/divide", expected="at least 5", provided=len(partes)-1))
+
+                separador = partes[4]
+                nome_set = partes[5]
+
+                for nome_var, (valor_var, tipo_var) in variaveis.items():
+                    if isinstance(valor_var, str):
+                        if (valor_var.startswith('"') and valor_var.endswith('"')) or \
+                                (valor_var.startswith("'") and valor_var.endswith("'")):
+                            valor_var = valor_var[1:-1]
+                        separador = separador.replace(nome_var, valor_var)
+
+                if (separador.startswith('"') and separador.endswith('"')) or \
+                        (separador.startswith("'") and separador.endswith("'")):
+                    separador = separador[1:-1]
+
+                novo_valor = valor_atual.split(separador)
+
+                sets[nome_set] = {
+                    "tipos": ["str"] * len(novo_valor),
+                    "valores": novo_valor
+                }
+
+            else:
+                raise SyntaxError(
+                    get_error("syntax_errors", "invalid_operation", operation=operacao))
+
+            if novo_valor is not None:
+                if isinstance(novo_valor, list):
+                    variaveis[var_name_destino] = (str(novo_valor), "str")
+                else:
+                    variaveis[var_name_destino] = (novo_valor, "str")
+
+            i += 1
+            continue
 
         elif linha.startswith("set/"):
             partes = linha.split("/")
@@ -375,9 +497,6 @@ def interpretar(codigo):
 
             valor_removido = set_data["valores"].pop(indice)
             tipo_removido = set_data["tipos"].pop(indice)
-
-            print(
-                f"Elemento '{valor_removido}' removido do set '{nome_set}' na posição {indice}")
             i += 1
 
         elif linha.startswith("get/"):

@@ -1,6 +1,7 @@
 /syn/
 
-func/add/a, b/{
-    return/int/ a + b
-}
-after/1/add/1, 2
+const/tau
+
+var/int/r/1
+
+return/float/tau * r ** 2

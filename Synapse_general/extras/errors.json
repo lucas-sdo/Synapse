@@ -59,6 +59,13 @@
             "message": "Potential loop variable reassignment detected: '{variable}'",
             "description": "Variable name may conflict with interpreter internal variables",
             "resolution": "Avoid using 'i', 'j', 'index' as variable names in loops"
+        },
+        "variable_not_found": {
+            "code": "SYN008",
+            "type": "SyntaxWarning",
+            "message": "Variable was not found or does not exists: '{variable}'",
+            "description": "Variable does not exist or was not defined",
+            "resolution": "Check variable name spelling and ensure it's defined before use"
         }
     },
     "function_errors": {
@@ -189,7 +196,7 @@
         "type_mismatch": {
             "code": "SYN025",
             "type": "TypeError",
-            "message": "Value recived is not int",
+            "message": "Value recived is not int/float as expected",
             "description": "Remember using only numbers for int variables",
             "resolution": "Ensure variable assignments and return values match their declared types"
         }

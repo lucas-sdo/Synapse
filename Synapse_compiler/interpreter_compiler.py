@@ -4,32 +4,6 @@ import datetime
 import json
 
 
-def salvar_Syn(nome, codigo: str):
-    assinatura = b"/syn/"
-    dados = codigo.encode("utf-8")
-    # tamanho = struct.pack("<I", len(dados))
-
-    with open(nome, "wb") as binario:
-        binario.write(assinatura)
-        # binario.write(tamanho)
-        binario.write(dados)
-    print(f"Arquivo {nome} criado com sucesso!")
-
-
-def ler_Syn(nome):
-    with open(nome, "rb") as binario:
-        assinatura = binario.read(5)
-        if assinatura != b"/syn/":
-            raise TypeError(get_error("file_errors", "invalid_file"))
-
-        codigo = binario.read().decode("utf-8")
-        return codigo
-
-
-with open(r'Synapse_general\extras\errors.json', 'r', encoding='utf-8') as f:
-    errors_data = json.load(f)
-
-
 def get_error(category, error_name, **kwargs):
     try:
         if category in errors_data and error_name in errors_data[category]:
@@ -48,7 +22,27 @@ def get_error(category, error_name, **kwargs):
         return f"SYN000: Error formatting message: {str(e)}"
 
 
-conteudo = ler_Syn(r"Synapse_general\exemplo.syn")
+def salvar_Syn(nome, codigo: str):
+    assinatura = b"/syn/"
+    dados = codigo.encode("utf-8")
+    # tamanho = struct.pack("<I", len(dados))
+
+    with open(nome, "wb") as binario:
+        binario.write(assinatura)
+        # binario.write(tamanho)
+        binario.write(dados)
+    print(f"Arquivo {nome} criado com sucesso!")
+
+
+def ler_Syn(nome):
+    with open(nome, "r") as code:
+        assinatura = code.read(5)
+        if assinatura != "/syn/":
+            raise TypeError(get_error("file_errors", "invalid_file"))
+
+        codigo = code.read()
+        return codigo
+
 
 # ---------- Interpretador ---------- #
 variaveis = {}
@@ -1120,4 +1114,8 @@ def interpretar(codigo):
                 get_error("system_errors", "unrecognized_element", element=element))
 
 
-interpretar(conteudo)
+if __name__ == "__main__":
+    conteudo = ler_Syn(r"exemplo.syn")
+    interpretar(conteudo)
+    with open(r'Synapse_interpreter\extras\errors.json', 'r', encoding='utf-8') as f:
+        errors_data = json.load(f)

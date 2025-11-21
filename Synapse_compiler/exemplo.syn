@@ -1,0 +1,7 @@
+/syn/
+
+var/int/x/10
+var/int/y/x+20
+var/int/z/y*2
+
+return/int/x

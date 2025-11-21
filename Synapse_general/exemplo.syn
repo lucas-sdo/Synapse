@@ -1,7 +1,0 @@
-/syn/
-
-const/tau
-
-var/int/r/1
-
-return/float/tau * r ** 2

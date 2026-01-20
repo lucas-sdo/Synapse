@@ -1,2 +1,8 @@
 /syn/
-return/int/return/100000000000000000000 + 1
+var/int/counter/0
+loop/counter < 3/{
+    var/int/counter/counter + 1
+    return/str/("Interaction: ")
+    return/int/counter
+    return/str/("---")
+}

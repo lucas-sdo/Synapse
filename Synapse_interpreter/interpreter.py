@@ -2,6 +2,30 @@ import math
 import threading
 import datetime
 import json
+import time
+
+inicio = time.time()
+# & C:/Users/lucas/AppData/Local/Programs/Python/Python313/python.exe "c:/Users/lucas/OneDrive/Área de Trabalho/Synapse/Synapse_interpreter/interpreter.py"
+with open(r'C:\Users\lucas\OneDrive\Área de Trabalho\Synapse\Synapse_interpreter\extras\errors.json', 'r', encoding='utf-8') as f:
+    errors_data = json.load(f)
+
+
+def get_error(category, error_name, **kwargs):
+    try:
+        if category in errors_data and error_name in errors_data[category]:
+            error_info = errors_data[category][error_name]
+            message = error_info["message"]
+
+            if "{" in message and "}" in message:
+                try:
+                    message = message.format(**kwargs)
+                except KeyError as e:
+                    message = error_info["message"]
+
+            return f"{error_info['code']}: {message}"
+        return f"SYN000: Error '{error_name}' not found in category '{category}'"
+    except Exception as e:
+        return f"SYN000: Error formatting message: {str(e)}"
 
 
 def salvar_Syn(nome, codigo: str):
@@ -26,25 +50,8 @@ def ler_Syn(nome):
         return codigo
 
 
-conteudo = ler_Syn(r"Synapse_interpreter\exemplo.syn")
-
-
-def get_error(category, error_name, **kwargs):
-    try:
-        if category in errors_data and error_name in errors_data[category]:
-            error_info = errors_data[category][error_name]
-            message = error_info["message"]
-
-            if "{" in message and "}" in message:
-                try:
-                    message = message.format(**kwargs)
-                except KeyError as e:
-                    message = error_info["message"]
-
-            return f"{error_info['code']}: {message}"
-        return f"SYN000: Error '{error_name}' not found in category '{category}'"
-    except Exception as e:
-        return f"SYN000: Error formatting message: {str(e)}"
+conteudo = ler_Syn(
+    r"C:\Users\lucas\OneDrive\Área de Trabalho\Synapse\Synapse_interpreter\exemplo.syn")
 
 
 # ---------- Interpretador ---------- #
@@ -815,7 +822,7 @@ def interpretar(codigo):
             i += 1
 
         elif linha.startswith("loop/"):
-            max_iteracoes = 1024
+            max_iteracoes = 1000001
             iteracao_atual = 0
             partes = linha.split("/", 2)
             condicao_texto = partes[1]
@@ -1119,5 +1126,6 @@ def interpretar(codigo):
 
 if __name__ == "__main__":
     interpretar(conteudo)
-    with open(r'Synapse_interpreter\extras\errors.json', 'r', encoding='utf-8') as f:
-        errors_data = json.load(f)
+
+fim = time.time()
+print(f"Tempo de execução: {fim - inicio} segundos")

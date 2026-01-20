@@ -4,6 +4,6 @@ var/float/my_float/1.5
 var/str/my_string/Hello World!
 var/bool/my_bool/True
 
-return/str, int/("The addition of my_float and my_integer is: "), (my_float + my_integer)
-return/str, str/("Hello, "), (Synapse)
+return/int/(my_float + my_integer)
 return/svar/(my_string)
+/end/

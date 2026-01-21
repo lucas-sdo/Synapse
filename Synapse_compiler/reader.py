@@ -6,6 +6,7 @@ from errors import *
 
 class Read:
     def __init__(self, file_name):
+        self.file_name = file_name
         self.lines = []
         try:
             with open(file_name, 'r', encoding='utf-8') as arquivo:

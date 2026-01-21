@@ -13,9 +13,20 @@ class Compiler:
         self.is_valid = False
         self.constants = []
         self.variables = {}
+        self.bytecode: bytearray = []
         self.file = [line.strip() for line in file]
         self.verify()
         pass
+
+    def add_const(self, value):
+        if value not in self.constants:
+            self.constants.append(value)
+        return self.constants.index(value)
+
+    def add_var(self, name):
+        if name not in self.variables:
+            self.variables[name] = len(self.variables)
+        return self.variables[name]
 
     def verify(self):
         if (self.file[0] == ASCII_SIGNATURE):
@@ -26,8 +37,6 @@ class Compiler:
 
     def compile_to_bytecode(self):
         if self.is_valid:
-            bytecode_lines = []
-
             for i, line in enumerate(self.file):
 
                 if line.startswith('/syn/'):
@@ -37,30 +46,45 @@ class Compiler:
                     line = convert('HALT')
 
                 elif line.startswith('var/'):
+                    # var/int/x/1
                     parts = line.split('/')
                     if len(parts) >= 3:
-                        var_name = parts[1]
-                        var_value = parts[2]
+                        var_type = parts[1]
+                        var_name = parts[2]
+                        var_value = parts[3]
 
-                        load_const = convert('LOAD_CONST')
-                        store_var = convert('STORE_VAR')
+                        const_idx = self.add_const(var_value)
+                        var_idx = self.add_var(var_name)
 
-                        if load_const is not None and store_var is not None:
-                            combined_bytecode = load_const + b' ' + var_value.encode() + b' ' + store_var + \
-                                b' ' + var_name.encode()
-                            bytecode_lines.append(combined_bytecode)
+                        self.bytecode += convert('LOAD_CONST')
+                        self.bytecode += bytes([const_idx])
+
+                        self.bytecode += convert('STORE_VAR')
+                        self.bytecode += bytes([var_idx])
                     else:
                         Error.error(
                             'SYN_003', 'Ensure if your varialbles follow this pattern: "var/type/value"')
 
                 elif line.startswith('return/'):
-                    # return/int/6 + 7
-                    content = line[6:]
-                    print_bytecode = convert('PRINT')
+                    # return/int/x
+                    parts = line.split('/')
+                    if len(parts) >= 2:
+                        type = parts[1]
+                        var_value = parts[2]
 
-                    if print_bytecode is not None:
-                        combined = print_bytecode + b' ' + content.encode()
-                        bytecode_lines.append(combined)
+                        if var_value in self.variables:
+                            var_idx = self.variables[var_value]
+
+                            self.bytecode += convert('LOAD_VAR')
+                            self.bytecode += bytes([var_idx])
+                            self.bytecode += convert('PRINT')
+                        else:
+                            Error.error(
+                                'SYN_005', var_name)
+
+                    else:
+                        Error.error(
+                            'SYN_003', 'Ensure if your varialbles follow this pattern: "return/type/value"')
 
                 elif line == '':
                     line = convert('NOP')
@@ -68,5 +92,4 @@ class Compiler:
                 else:
                     Error.error('SYN_004', line)
 
-            print(bytecode_lines)
-            return bytecode_lines
+            # print(self.bytecode)

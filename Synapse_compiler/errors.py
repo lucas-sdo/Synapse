@@ -9,6 +9,7 @@ class Error:
         "SYN_002": "File not found: ",
         "SYN_003": "Syntax error: ",
         "SYN_004": "Unknow method: ",
+        "SYN_005": "Undeclared variable: ",
     }
 
     @staticmethod

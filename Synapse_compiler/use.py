@@ -13,9 +13,6 @@ def main():
         constants=result.constants,
         var_count=len(result.variables)
     )
-    print("BYTECODE FINAL:", result.bytecode)
-    print("CONSTANTS:", result.constants)
-    print("VARS:", result.variables)
     vm.run()
     return result
 

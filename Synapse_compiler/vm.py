@@ -30,8 +30,47 @@ class VirtualMachine:
                 self.stack.append(self.vars[idx])
 
             elif opcode == 112:  # PRINT
-                print(">>> PRINT OPCODE EXECUTADO")
                 print(self.stack.pop())
+
+            elif opcode == 32:  # ADD
+                idx = self.bytecode[self.ip]
+
+                b = self.stack.pop()
+                a = self.stack.pop()
+
+                result = int(a) + int(b)
+
+                self.stack.append(result)
+
+            elif opcode == 33:  # SUB
+                idx = self.bytecode[self.ip]
+
+                b = self.stack.pop()
+                a = self.stack.pop()
+
+                result = int(a) - int(b)
+
+                self.stack.append(result)
+
+            elif opcode == 34:  # MUL
+                idx = self.bytecode[self.ip]
+
+                b = self.stack.pop()
+                a = self.stack.pop()
+
+                result = int(a) * int(b)
+
+                self.stack.append(result)
+
+            elif opcode == 35:  # DIV
+                idx = self.bytecode[self.ip]
+
+                b = self.stack.pop()
+                a = self.stack.pop()
+
+                result = int(a) / int(b)
+
+                self.stack.append(result)
 
             elif opcode == 0:  # HALT
                 break

@@ -5,8 +5,7 @@ import json
 import time
 
 inicio = time.time()
-# & C:/Users/lucas/AppData/Local/Programs/Python/Python313/python.exe "c:/Users/lucas/OneDrive/Área de Trabalho/Synapse/Synapse_interpreter/interpreter.py"
-with open(r'C:\Users\lucas\OneDrive\Área de Trabalho\Synapse\Synapse_interpreter\extras\errors.json', 'r', encoding='utf-8') as f:
+with open(r'Synapse_interpreter\exemplo.syn', 'r', encoding='utf-8') as f:
     errors_data = json.load(f)
 
 
@@ -51,7 +50,7 @@ def ler_Syn(nome):
 
 
 conteudo = ler_Syn(
-    r"C:\Users\lucas\OneDrive\Área de Trabalho\Synapse\Synapse_interpreter\exemplo.syn")
+    r"Synapse_interpreter\exemplo.syn")
 
 
 # ---------- Interpretador ---------- #

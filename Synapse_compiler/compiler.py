@@ -43,7 +43,7 @@ class Compiler:
                     line = BINARY_SIGNATURE
 
                 elif line.startswith('/end/'):
-                    line = convert('HALT')
+                    self.bytecode += convert('HALT')
 
                 elif line.startswith('var/'):
                     # var/int/x/1
@@ -71,6 +71,7 @@ class Compiler:
                     if len(parts) >= 2:
                         type = parts[1]
                         var_value = parts[2]
+                        var_value = var_value[1:-1]
 
                         if var_value in self.variables:
                             var_idx = self.variables[var_value]
@@ -79,8 +80,74 @@ class Compiler:
                             self.bytecode += bytes([var_idx])
                             self.bytecode += convert('PRINT')
                         else:
-                            Error.error(
-                                'SYN_005', var_name)
+
+                            if '+' in var_value:
+                                left, right = var_value.split('+')
+
+                                # LOAD_VAR x
+                                left_idx = self.variables[left.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([left_idx])
+
+                                # LOAD_VAR y
+                                right_idx = self.variables[right.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([right_idx])
+
+                                self.bytecode += convert('ADD')
+                                self.bytecode += convert('PRINT')
+
+                            elif '-' in var_value:
+                                left, right = var_value.split('-')
+
+                                # LOAD_VAR x
+                                left_idx = self.variables[left.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([left_idx])
+
+                                # LOAD_VAR y
+                                right_idx = self.variables[right.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([right_idx])
+
+                                self.bytecode += convert('SUB')
+                                self.bytecode += convert('PRINT')
+
+                            elif '*' in var_value:
+                                left, right = var_value.split('*')
+
+                                # LOAD_VAR x
+                                left_idx = self.variables[left.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([left_idx])
+
+                                # LOAD_VAR y
+                                right_idx = self.variables[right.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([right_idx])
+
+                                self.bytecode += convert('MUL')
+                                self.bytecode += convert('PRINT')
+
+                            elif '/' in var_value:
+                                left, right = var_value.split('/')
+
+                                # LOAD_VAR x
+                                left_idx = self.variables[left.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([left_idx])
+
+                                # LOAD_VAR y
+                                right_idx = self.variables[right.strip()]
+                                self.bytecode += convert('LOAD_VAR')
+                                self.bytecode += bytes([right_idx])
+
+                                self.bytecode += convert('DIV')
+                                self.bytecode += convert('PRINT')
+
+                            else:
+                                Error.error(
+                                    'SYN_005', var_value)
 
                     else:
                         Error.error(

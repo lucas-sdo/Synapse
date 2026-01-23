@@ -1,0 +1,51 @@
+            /syn/
+
+            func/Calculator/null/{
+                return/str/("  ")
+                return/str/("==== CALCULATOR ====")
+                return/str/("  ")
+                return/str/("1. Addition")
+                return/str/("2. Subtraction")
+                return/str/("3. Multiplication")
+                return/str/("4. Division")
+                return/str/("5. Exponentiation")
+                input/int/opcao_escolhida/Insert the number of the operation you want to do:
+
+                if/opcao_escolhida == 1/{
+                    input/float/n1/Insert the first number: 
+                    input/float/n2/Insert the second number: 
+                    return/float/n1 + n2
+                } 
+                {
+                    if/opcao_escolhida == 2/{
+                        input/float/n1/Insert the first number: 
+                        input/float/n2/Insert the second number: 
+                        return/float/n1 - n2
+                    } 
+                    {
+                        if/opcao_escolhida == 3/{
+                            input/float/n1/Insert the first number: 
+                            input/float/n2/Insert the second number: 
+                            return/float/n1 * n2
+                        } 
+                        {
+                            if/opcao_escolhida == 4/{
+                                input/float/n1/Insert the first number: 
+                                input/float/n2/Insert the second number: 
+                                return/float/n1 / n2
+                        } 
+                        {
+                            if/opcao_escolhida == 5/{
+                                input/float/n1/Insert the first number: 
+                                input/float/n2/Insert the second number: 
+                                return/float/n1 ** n2
+                            } 
+                            {
+                                return/str/("Erro: número da operação inválido!")
+                            }
+                        }
+                        }
+                    }
+                }
+            }
+            call/Calculator/null

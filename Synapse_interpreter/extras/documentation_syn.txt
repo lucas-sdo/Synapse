@@ -1,0 +1,445 @@
+
+Documentation for Synapse(.syn):
+
+1. Basic Methods:
+
+//----------------------------------------------------------------------//
+1.1 * Declaring variables (var/type/name/value):
+    Use "var" folowed by "int" for integer numbers, "float" for numbers with decimal part, "bool" for boolean values(True or False) or "str" for strings. After expecificating the type of variable you can say any "name" for it (that doesn't contain the "/"). Just after doing this you will have an working variable. Remember of separing those values by "/".
+
+    E.g.:
+        var/int/my_integer/1
+        var/float/my_float/1.5
+        var/str/my_string/Hello World!
+        var/bool/my_bool/True
+
+    - Variables MUST not contain any "/" in their names;
+    - Variables MUST contain the type of their values;
+    - Variables MUST have their values;
+    - String variables doesn't need to have quotation marks;
+    - Boolean variables MUST contain their value's first letter written with Upercase e.g.:False;
+//----------------------------------------------------------------------//
+1.2 * Returning a value (return/type, type/(value1), (value2)):
+    Use "return/" folowed by the type of the thing you want to print(int, str, float, bool, svar) anything you want to print on the screen, It can be a variable, or just write it right after the "/".
+
+    E.g.:
+        var/str/string/I'm a string!
+        var/int/x/10
+        var/int/y/5
+
+        return/str, int/("The addition of x and y is: "), (x + y)
+        return/str, str/("Hello, "), (Synapse)
+        return/svar/(string)
+    Output:
+        The addition of x and y is: 15
+        Hello, Synapse
+        I'm a string!
+
+    - Normal strings DO NOT show variables. You have to use in the types "svar", stands for "String variable";
+    - Strings CAN BE written with or without the quotation marks or apostrophes ("", ''). However is recomended using with them, you (and the compiler) can manusiete them better;
+    - Integers and Floats variables CAN BE operated/compared together even though they have different types;
+    - You MUST specify the types of values you are returning, if they are more than 1 write them separeted by commas, like the example;
+//----------------------------------------------------------------------//
+1.3 * Doing simple mathmatical operations (+, -, *, /):
+    As same as Python you can make adicions with "+", subtractions with "-", multiplications with "*" and divisions with "/". To do other operations like exponatiations, square roots, cubic roots etc. You can see at "Doing complex mathmatical operations"
+
+    E.g.:
+        return/3.14 * 2
+        return 1 + 2
+        return/5 - 3
+    Output:
+        6.28
+        3
+        2
+//----------------------------------------------------------------------//
+1.4 * Declaring functions (func/name/parameters/{action}):
+    The method "func/" executes an action, like other functions in general, to write a function you must remember to write the sintax corectly, start with "func/" then insert the function name, parameters(MUST have a least one, even if it's not used) and in the last place the action the function will do(inside parentheses).
+
+    E.g.:
+        func/add/a, b/{
+            return/int/ a + b
+        }
+        call/add/2, 1
+    Output:
+        3
+
+    - Functions MUST have a least one parameter, even if it's not used;
+    - Functions's action MUST ocupy more than one line, like the example; 
+    - Functions CAN'T be executed without an method "call";
+    - Functions doesn't need the parameter to be used in it;
+    - The action that the function will execute MUST be inside parentheses;
+//----------------------------------------------------------------------//
+1.5 * Calling functions (call/name/parameters):
+    The method "call/" calls a function that was already declarated, write "call/" than the name of the function you want to call. Right after that you say the parameters the function requiers.
+
+    E.g.:
+        func/add/a, b/{
+            return/int/ a + b
+        }
+        call/add/2, 1
+    Output:
+        3
+
+    - Callers MUST have a least one parameter, even if it's not used in the function;
+//----------------------------------------------------------------------//
+1.6 * Making comments (//text):
+    The method "//" creates a comment, the coment don't interact with the rest of the code, will just be there for better organization or location.
+
+    E.g.:
+        //My comment
+//----------------------------------------------------------------------//
+1.7 * Asking an input from the user (input/value/name/question):
+    The method "input/" asks for an answer from the user. It needs a value(int, str or float), a name or ID(which will permit the creation of a variable with this name) and the question will be the text/question printed for the user to answer.
+
+    E.g.:
+        input/int/age/How old are you
+        return/svar/age
+    Output:
+        How old are you?30(can be other numbers too)
+        30
+    
+    - An "input/" input, can be manusieted like a variable, using it's "name" especified after the third "/". E.g.: return/name;
+    - Inputs JUST ACCEPT the types: "int, str or float";
+//----------------------------------------------------------------------//
+1.8 * Exemple:
+    //Little exemple about simple actions on Synapse;
+
+    input/str/name/What's your name?;
+    input/int/age/What's your age?;
+    var/str/next_year/"Next year ";
+
+    func/greeting/null/{return/svar, svar, str, int/(next_year), (name), (", will have "), (age + 1)};
+    call/greeting/null;
+
+    //Output:;
+    //Next year John Doe, will have 31 (different for different inputs);
+//----------------------------------------------------------------------//
+
+2. Other Methods:
+
+//----------------------------------------------------------------------//
+2.1 * Using Structure If-Else (if/statement/{Case statemet is true} {Case statemet is false}):
+    Use "if/" followed by an statement, can be an str, float, int etc. if the statement is true the content in the first "{}". If it is not true(false) the content in the second "{}" is executed. There is no "elif" or "if else".
+
+    E.g.:
+        if/1 + 2 == 3/{return/str/The operation is true!}, {return/str/The operation is false!}
+    Output:
+        The operation is true!
+    
+    - The "else" part IS NOT obrigatory, however is highly recomended using it;
+    - There is not "elif/else if" in synapse, you must use ifs inside ifs;
+//----------------------------------------------------------------------//
+2.2 * Using Dates (date/especification):
+    Use "date/" to see any time-related data about your region. You can specify the especifications in the second part. Look at the extras to see every especification.
+
+    E.g.:
+        date/
+    Output:
+        Sat Dez  25 12:00:00 2026
+    
+    - Leaving the espace in blank or in a non-reconized especification will result similarly to the example above;
+    - Take a look at extras to see all the especification;
+//----------------------------------------------------------------------//
+2.3 * Using Timers (date/especification):
+    Use "date/" to see any time-related data about your region. You can specify the especifications in the second part. Look at the extras to see every especification.
+
+    E.g.:
+        date/
+    Output:
+        Sat Dez  25 12:00:00 2026
+    
+    - Leaving the espace in blank or in a non-reconized especification will result similarly to the example above;
+    - Take a look at extras to see all the especification;
+//----------------------------------------------------------------------//
+2.4 * Using loops (loop/condition/{action executade while the condition is true}):
+    The "loop/" method executes an action while condition written is true. Remember using variables in the condition, because they are more likly to not causing the overflow error: "Loop exceeded maximum iterations".
+
+    E.g.:
+        var/int/counter/0
+        loop/counter < 3/{
+            var/int/counter/counter + 1
+            return/str/("Interaction: ")
+            return/int/counter
+            return/str/("---")
+        }
+    Output:
+        Interaction: 
+        1
+        ---
+        Interaction:
+        2
+        ---
+        Interaction:
+        3
+        ---
+//----------------------------------------------------------------------//
+2.5 * Using Intervals (every/wait_time/func_exemplo):
+    The "every/" method calls a function every "wait_time".
+
+    E.g.:
+        func/add/a, b/{
+            return/int/ a + b
+        }
+        every/1/add/1, 2
+    Output:
+        3
+        3
+        3
+        ...
+    - The "wait_time" measure is in seconds;
+    - The interval goes "forever";
+//----------------------------------------------------------------------//
+2.6 * Using Wait Time (after/wait_time/func_exemplo):
+    The "every/" method calls a function after waiting the for the wait_time.
+
+    E.g.:
+        func/add/a, b/{
+            return/int/ a + b
+        }
+        after/1/add/1, 2
+    Output:
+        3
+//----------------------------------------------------------------------//
+
+3. Using "arrays"/sets:
+
+//----------------------------------------------------------------------//
+3.1 * Creating a "set" (set/set_name/type_1, type_2/{value_1, value_2}):
+    An array in Synapse is called "set", it's similar to a list of variables, use "set/" followed by the name of this set, the types of values used in the itens.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        return/set/my_set
+    Output:
+        [0] int: 10
+        [1] str: hello
+    
+    - To show an set you can use the "return" followed by the type set, then the set's name;
+    - Remember: Sets start counting at zero;
+//----------------------------------------------------------------------//
+3.2 * Adding a value in a "set" (add/type/value):
+    To add other elements in a set you can use "add/", followed by your values's type.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        add/my_set/int/20
+        return/set/my_set
+    Output:
+        [0] int: 10
+        [1] str: hello
+        [2] int: 20
+//----------------------------------------------------------------------//
+3.3 * Removing a value in a "set" (remove/set_name/index):
+    To remove other elements in a set you can use "remove/", followed by your values's index(which starts at 0).
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        remove/my_set/1
+        return/set/my_set
+    Output:
+        [0] int: 10
+//----------------------------------------------------------------------//
+3.4 * Getting a value in a "set" (get/set_name/index/var_variable):
+    Get obtains the value in the set then creates a variable with the name given in the var_name. The index represents value you want to get.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        get/my_set/0/first_elemet
+        return/svar/first_elemet
+    Output:
+        10
+//----------------------------------------------------------------------//
+3.5 * Getting the lenght of values in a "set" (size/set_name/var_variable):
+    Size obtains the lenght of values in the set than cerate a (int) variable for it.
+
+    E.g.:
+        set/my_set/int,str/{10, "hello"}
+        size/my_set/my_set_size
+        return/int/my_set_size
+    Output:
+        2
+//----------------------------------------------------------------------//
+
+4. Math Operations:
+
+//----------------------------------------------------------------------//
+4.1 * Using simple math operations (value operation value):
+    Here is a list of simple operations you can do, on returns for example:
+
+    - Addition, Use "+";
+    - Subtractions, Use "-";
+    - Multiplications, Use "*";
+    - Divisions, Use "/";
+    - Exponatiations, Use "**" (or math/expo/name/value, value);
+//----------------------------------------------------------------------//
+4.2 * Using advanced math operations (math/operation/name/value):
+    Advanced math operations can be manipulate as same as variables, when you use this method an variable is created with the value.
+
+    - Square Roots, Use "sqrt";
+    - Cubic Roots, Use "cbrt";
+    - Fatorial, Use "fac";
+    - Ceil (rounding up to the nearest integer), Use "ceil";
+    - Rounding to the nearest whole number., Use "round";
+//----------------------------------------------------------------------//
+4.3 * Using advanced math operations between 2 values(math/operation/name/value, value):
+    Here you see other advanced operations with more than one value.
+
+    - Greatest Common Dvisor, Use "gdc";
+    - Exponatiation, Use "expo";
+//----------------------------------------------------------------------//
+4.4 * Using math constants (const/constant_name):
+    Returns the constant specifyed at the "constant_name". You can refere to them like a variable too, all leters lowercase.
+
+    - Pi (π), Use "pi";
+    - E (euler's number), Use "e";
+    - Tau (τ, the same as 2 pi), Use "tau";
+
+    - When returning any of those constants AWAYS using in the types "float"
+//----------------------------------------------------------------------//
+4.5 * Exemple:
+    return/str/(=== Calculate the circumference of a circle ===)
+    input/float/radius/Input the circle radius: 
+    const/tau
+    /tau is the same as 2 pi!
+
+    func/calculate/null/{return/str, float/("The circumference of the circle is: "), (tau * radius)}
+    call/calculate/null
+
+    /Output:
+    /The circumference of the sphere is: 12.566370614359172 (different for different inputs)
+//----------------------------------------------------------------------//
+
+
+//----------------------------------------------------------------------//
+EXTRAS:
+    I. Types ->
+        - "int", an integer number is a number that don't have an rational part. Can be used at operations. E.g. 2;
+
+        - "float", an float number is a number that have an rational part, which is written after a point. E.g. 3.14. Can be used at operations.;
+
+        - "str", an text value, however it can represent numbers can not make operations with them. It is recomended to use " or ' while expressing those values E.g. "Hello World";
+
+        - "svar", similar to "str" but this one in "returns" shows a string variable, not just a simple string.
+
+        - "set", prints a set of values in a "return", mostly used for debuging.
+
+    II. Operations ->
+        - "==" the same as "is equal to", used in "if/";
+
+        - "!=" the same as "is different to", used in "if/";
+
+        - "+" the same as "add with", used in "if/" and other kinds of operations;
+
+        - "-" the same as "subtracted by", used in "if/" and other kinds of operations;
+
+        - "*" the same as "multiplied by", used in "if/" and other kinds of operations;
+
+        - "/" the same as "divided by", used in "if/" and other kinds of operations;
+
+        - "**" or "expo" the same as "raised to the power of", used in "if/" and other kinds of operations;
+
+        -"pi" the ratio between the circumference of a circle and its diameter, aprox. 3.14159265359;
+
+        -"e" a mathematical constant equal to 2pi (see more on: https://en.wikipedia.org/wiki/E_(mathematical_constant) ), aprox. 2.718281828459045;
+
+        -"tau" a mathematical constant equal to 2pi, aprox. 6.283185307179586;
+
+    III. Date & Times ->
+        -"week_day", returns the current day of the week. Start counting by sunday. E.g. 1;
+
+        -"week_s", returns the current name of the day of the week in a smaller version. E.g. Mon;
+
+        -"week_b", returns the current name of the day of the week. E.g. Monday;
+
+        -"month_day", returns the current day of the month. E.g. 31
+
+        -"month_s", returns the current name of the month in a smaller version. E.g. Nov;
+
+        -"month_b", returns the current name of the month. E.g. November;
+
+        -"year_day", returns the current day of the year. E.g. 250;
+
+        -"year_s", returns the current name of the year in a smaller version. E.g. 26;
+
+        -"year_b", returns the current name of the year. E.g. 2026;
+
+        -"date", returns the current date. E.g. 12/25/26;
+
+        -"time", returns the current day time. E.g. 12:30:59;
+
+        -"am_pm", returns if it is AM or PM. E.g. PM;
+
+    IV Errors ->
+        - By writing "config/error" you create the errors.json, there you can see what does the errors you had means, and edit them dependig in your needs;
+        - If you want to reset the errors again just input write "config/error" again;
+
+        === Here are some tips for avoid errors ===
+
+        1. Do not to name two variable with the same name, it'll cause an error;
+        2. Remember when compiling syn files, they MUST start with "/syn/";
+        3. Sets start counting at 0;
+
+    V  Examples Gallery -> 
+        - Calculator:
+            /syn/
+
+            func/Calculator/null/{
+                return/str/("  ")
+                return/str/("==== CALCULATOR ====")
+                return/str/("  ")
+                return/str/("1. Addition")
+                return/str/("2. Subtraction")
+                return/str/("3. Multiplication")
+                return/str/("4. Division")
+                return/str/("5. Exponentiation")
+                input/int/opcao_escolhida/Insert the number of the operation you want to do:
+
+                if/opcao_escolhida == 1/{
+                    input/float/n1/Insert the first number: 
+                    input/float/n2/Insert the second number: 
+                    return/float/n1 + n2
+                } 
+                {
+                    if/opcao_escolhida == 2/{
+                        input/float/n1/Insert the first number: 
+                        input/float/n2/Insert the second number: 
+                        return/float/n1 - n2
+                    } 
+                    {
+                        if/opcao_escolhida == 3/{
+                            input/float/n1/Insert the first number: 
+                            input/float/n2/Insert the second number: 
+                            return/float/n1 * n2
+                        } 
+                        {
+                            if/opcao_escolhida == 4/{
+                                input/float/n1/Insert the first number: 
+                                input/float/n2/Insert the second number: 
+                                return/float/n1 / n2
+                        } 
+                        {
+                            if/opcao_escolhida == 5/{
+                                input/float/n1/Insert the first number: 
+                                input/float/n2/Insert the second number: 
+                                return/float/n1 ** n2
+                            } 
+                            {
+                                return/str/("Erro: número da operação inválido!")
+                            }
+                        }
+                        }
+                    }
+                }
+            }
+            call/Calculator/null
+
+        - Square Root maker:
+            /syn/
+
+            func/Square_Root/null/{
+                input/float/number/Insert a number: 
+                math/sqrt/sqrt/number
+                return/str, float, str, float/("The square root of "), (number), (" is "), (sqrt)
+            }
+            call/Square_Root/null
+//----------------------------------------------------------------------//

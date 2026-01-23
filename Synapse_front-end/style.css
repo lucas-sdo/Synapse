@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#lado_direito,
+#lado_esquerdo {
+    width: 45%;
+    height: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: blueviolet;
+    color: white;
+    font-size: medium;
+    transition: 0.8s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+
+#btns_redimensonar {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    gap: 15px;
+}
+
+.redmensionar_btn {
+    height: 50px;
+    width: 50px;
+}
+
+#backround {
+    background: #1B1B2B;
+    height: 100vh;
+    min-height: max-content;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#code {
+    margin: 20px;
+    border-radius: 10px;
+    color: white;
+    background: #1B1B2B;
+    font-size: 15px;
+    width: 100%;
+    max-height: 90%;
+    height: 80%;
+    resize: vertical;
+    padding: 20px;
+    border: solid 1.5px blueviolet;
+}
+
+#terminal {
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: black;
+    font-family: monospace;
+    font-size: larger;
+    color: white;
+    width: 100%;
+    height: 80%;
+    padding: 20px;
+}
+
+#terminal::selection {
+    background-color: white;
+    color: black;
+}

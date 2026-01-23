@@ -1,0 +1,8 @@
+/syn/
+    var/int/x/10
+    var/int/y/5
+    return/int/(x + y)
+    return/int/(y)
+    return/int/(x)
+    return/str/"Olá"
+ /end/

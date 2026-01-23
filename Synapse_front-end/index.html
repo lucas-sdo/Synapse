@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <title>Synaspe Web Interpreter</title>
+</head>
+
+<body>
+    <div id="backround">
+        <div id="lado_direito">
+            <div id="btns_redimensonar">
+                <button onclick="mudar_fonte(fonte_atual + 10)" class="redmensionar_btn">+</button>
+                <button onclick="mudar_fonte(fonte_atual - 10)" class="redmensionar_btn">-</button>
+            </div>
+            <textarea name="code" id="code" placeholder="Insert your Synaspe code here: "></textarea>
+            <button onclick="interpretar()" id="run_code" style="width: 20%;">Run Code</button>
+        </div>
+        <div id="lado_esquerdo">
+            <div name="terminal" id="terminal">The output will be here!</div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,9 +1,8 @@
 /syn/
-var/int/my_integer/1
-var/float/my_float/1.5
-var/str/my_string/Hello World!
-var/bool/my_bool/True
-
-return/int/(my_float + my_integer)
-return/svar/(my_string)
-/end/
+    var/int/x/10
+    var/int/y/5
+    return/int/(x + y)
+    return/int/(y)
+    return/int/(x)
+    return/str/"Olá"
+ /end/

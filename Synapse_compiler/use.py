@@ -1,6 +1,5 @@
 from reader import *
 from compiler import *
-from errors import Error
 from vm import *
 
 

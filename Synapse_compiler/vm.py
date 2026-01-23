@@ -1,4 +1,4 @@
-import convert
+from errors import Error
 
 
 class VirtualMachine:
@@ -33,44 +33,60 @@ class VirtualMachine:
                 print(self.stack.pop())
 
             elif opcode == 32:  # ADD
-                idx = self.bytecode[self.ip]
+                try:
+                    idx = self.bytecode[self.ip]
 
-                b = self.stack.pop()
-                a = self.stack.pop()
+                    b = self.stack.pop()
+                    a = self.stack.pop()
 
-                result = int(a) + int(b)
+                    result = int(a) + int(b)
 
-                self.stack.append(result)
+                    self.stack.append(result)
+                except ValueError:
+                    Error.error('SYN_005', [a, b])
 
             elif opcode == 33:  # SUB
-                idx = self.bytecode[self.ip]
+                try:
+                    idx = self.bytecode[self.ip]
 
-                b = self.stack.pop()
-                a = self.stack.pop()
+                    b = self.stack.pop()
+                    a = self.stack.pop()
 
-                result = int(a) - int(b)
+                    result = int(a) - int(b)
 
-                self.stack.append(result)
+                    self.stack.append(result)
+                except ValueError:
+                    Error.error('SYN_005', [a, b])
 
             elif opcode == 34:  # MUL
-                idx = self.bytecode[self.ip]
+                try:
+                    idx = self.bytecode[self.ip]
 
-                b = self.stack.pop()
-                a = self.stack.pop()
+                    b = self.stack.pop()
+                    a = self.stack.pop()
 
-                result = int(a) * int(b)
+                    result = int(a) * int(b)
 
-                self.stack.append(result)
+                    self.stack.append(result)
+                except ValueError:
+                    Error.error('SYN_005', [a, b])
 
             elif opcode == 35:  # DIV
-                idx = self.bytecode[self.ip]
+                try:
+                    idx = self.bytecode[self.ip]
 
-                b = self.stack.pop()
-                a = self.stack.pop()
+                    b = self.stack.pop()
+                    a = self.stack.pop()
 
-                result = int(a) / int(b)
+                    result = int(a) / int(b)
 
-                self.stack.append(result)
+                    self.stack.append(result)
+                except ValueError:
+                    Error.error('SYN_005', [a, b])
 
             elif opcode == 0:  # HALT
                 break
+
+            # print(self.vars)
+            # print(self.stack)
+            # print(self.vars)

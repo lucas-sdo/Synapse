@@ -20,6 +20,15 @@ def convert(nickname):
         'SUB': b'\x21',
         'ADD': b'\x20',
 
+        'EQ': b'\x30',
+        'NE': b'\x31',
+        'LT': b'\x32',
+        'GT': b'\x33',
+
+        'JMP': b'\x40',
+        'JMP_IF_TRUE': b'\x40',
+        'JMP_IF_FALSE': b'\x40',
+
         'LOAD_CONST': b'\x40',
     }
 

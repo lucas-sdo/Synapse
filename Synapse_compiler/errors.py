@@ -5,11 +5,13 @@
 
 class Error:
     error_codes = {
-        "SYN_001": "Invalid file format: ",
-        "SYN_002": "File not found: ",
+        "SYN_001": "Invalid file format error: ",
+        "SYN_002": "File not found error: ",
         "SYN_003": "Syntax error: ",
-        "SYN_004": "Unknow method: ",
-        "SYN_005": "Undeclared variable: ",
+        "SYN_004": "Unknow type error: ",
+        "SYN_005": "Type mismatch error: ",
+        "SYN_006": "Unknow method error: ",
+        "SYN_007": "Undeclared variable error: ",
     }
 
     @staticmethod

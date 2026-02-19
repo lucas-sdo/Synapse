@@ -1,0 +1,15 @@
+col/name/str
+col/age/int
+col/is_admin/bool
+col/salary/float
+
+tab/workers/(name/age/is_admin/salary)
+
+commit
+
+com/add/workers/("John", 30, false, 2500.0)
+com/add/workers/("Carlos", 42, false, 4000.5)
+com/add/workers/("Maria", 25, true, 9000.0com)
+
+com/rem/workers/(name = "John")
+com/get/workers/(name = "Maria")

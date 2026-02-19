@@ -5,8 +5,14 @@ def convert(nickname):
     dictionary = {
         'HALT': b'\x00',
         'NOP': b'\x01',
+        'RET': b'\x02',
+
+        'PUSH': b'\x10',
+        'POP': b'\x11',
+
         'LOAD_VAR': b'\x50',
         'STORE_VAR': b'\x51',
+
         'PRINT': b'\x70',
         'INPUT': b'\x71',
         'TYPEOF': b'\x80',
@@ -14,11 +20,10 @@ def convert(nickname):
         'EQ': b'\x30',
         'NE': b'\x31',
 
-        'POP': b'\x11',
-        'DIV': b'\x23',
-        'MUL': b'\x22',
-        'SUB': b'\x21',
         'ADD': b'\x20',
+        'SUB': b'\x21',
+        'MUL': b'\x22',
+        'DIV': b'\x23',
 
         'EQ': b'\x30',
         'NE': b'\x31',
@@ -26,10 +31,14 @@ def convert(nickname):
         'GT': b'\x33',
 
         'JMP': b'\x40',
-        'JMP_IF_TRUE': b'\x40',
-        'JMP_IF_FALSE': b'\x40',
+        'JMP_IF_TRUE': b'\x41',
+        'JMP_IF_FALSE': b'\x42',
 
         'LOAD_CONST': b'\x40',
+
+        'FUNC': b'\x60',
+        'CALL': b'\x61',
+        'FUNC_END': b'\x62',
     }
 
     if nickname in dictionary:

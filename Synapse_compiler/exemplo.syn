@@ -1,8 +1,8 @@
 /syn/
-    var/int/x/10
-    var/int/y/5
-    return/int/(x + y)
-    return/int/(y)
-    return/int/(x)
-    return/str/"Olá"
- /end/
+    func/add_numbers
+        var/int/a/5
+        var/int/b/10
+        call/add_numbers
+        return/int/(a+b)
+    end/add_numbers
+/end/

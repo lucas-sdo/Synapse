@@ -9,9 +9,10 @@ class Error:
         "SYN_002": "File not found error: ",
         "SYN_003": "Syntax error: ",
         "SYN_004": "Unknow type error: ",
-        "SYN_005": "Type mismatch error: ",
-        "SYN_006": "Unknow method error: ",
-        "SYN_007": "Undeclared variable error: ",
+        "SYN_005": "Unknow function error: ",
+        "SYN_006": "Type mismatch error: ",
+        "SYN_007": "Unknow method error: ",
+        "SYN_008": "Undeclared variable error: ",
     }
 
     @staticmethod

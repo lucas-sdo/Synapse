@@ -5,6 +5,9 @@ class VirtualMachine:
     def __init__(self, bytecode, constants, var_count):
         self.bytecode = bytecode
         self.constants = constants
+        self.call_stack = []
+        self.current_function = None
+        self.is_in_func = False
         self.vars = [None] * var_count
         self.stack = []
         self.ip = 0
@@ -30,7 +33,8 @@ class VirtualMachine:
                 self.stack.append(self.vars[idx])
 
             elif opcode == 112:  # PRINT
-                print(self.stack.pop())
+                if self.is_in_func == False:
+                    print(self.stack.pop())
 
             elif opcode == 32:  # ADD
                 try:
@@ -84,9 +88,17 @@ class VirtualMachine:
                 except ValueError:
                     Error.error('SYN_005', [a, b])
 
+            elif opcode == 96:  # FUNC
+                self.is_in_func = True
+
+            elif opcode == 97:  # CALL
+                print('é uma funcao')
+
+            elif opcode == 98:  # FUNC END
+                print('é uma funcao')
+
+            elif opcode == 121:  # RET
+                self.ip = self.call_stack.pop()
+
             elif opcode == 0:  # HALT
                 break
-
-            # print(self.vars)
-            # print(self.stack)
-            # print(self.vars)

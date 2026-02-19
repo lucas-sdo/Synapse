@@ -11,6 +11,8 @@ ASCII_SIGNATURE: str = '/syn/'
 class Compiler:
     def __init__(self, file: list):
         self.is_valid = False
+        self.functions = {}
+        self.pending_calls = []
         self.constants = []
         self.variables = {}
         self.bytecode: bytearray = []
@@ -72,11 +74,13 @@ class Compiler:
     def compile_to_bytecode(self):
         if self.is_valid:
             for i, line in enumerate(self.file):
+                line: str
 
                 if line.startswith('/syn/'):
                     line = BINARY_SIGNATURE
 
                 elif line.startswith('/end/'):
+                    print(self.bytecode)
                     self.bytecode += convert('HALT')
 
                 elif line.startswith('var/'):
@@ -177,6 +181,37 @@ class Compiler:
                     else:
                         Error.error(
                             'SYN_003', 'Ensure if your varialbles follow this pattern: "return/type/value"')
+
+                elif line.startswith('if/'):
+                    # TODO: Add code controlers.
+                    print('TODO: Add flux controlers.')
+
+                elif line.startswith('func/'):
+                    # func/func_name/params (future)
+                    parts = line.split('/')
+                    func_name = parts[1]
+                    # params = parts[2]
+
+                    self.bytecode += convert('FUNC')
+                    self.functions[func_name] = i
+                    self.bytecode += bytes(i)
+
+                elif line.startswith('end/'):
+                    # end/func_name
+                    self.bytecode += convert('FUNC_END')
+
+                elif line.startswith('call/'):
+                    # call/func_name/params (future)
+                    parts = line.split('/')
+                    func_name = parts[1]
+                    # params = parts[2]
+
+                    self.bytecode += convert('CALL')
+                    print(self.functions)
+                    if func_name in self.functions:
+                        self.bytecode += bytes(self.functions.get(func_name))
+                    else:
+                        Error.error('SYN_005', func_name)
 
                 elif line == '':
                     line = convert('NOP')

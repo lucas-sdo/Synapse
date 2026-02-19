@@ -5,7 +5,7 @@ import json
 import time
 
 inicio = time.time()
-with open(r'Synapse_interpreter\exemplo.syn', 'r', encoding='utf-8') as f:
+with open(r'Synapse_interpreter\extras\errors.json', 'r', encoding='utf-8') as f:
     errors_data = json.load(f)
 
 

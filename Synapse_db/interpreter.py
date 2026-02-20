@@ -23,7 +23,7 @@ class Interpreter:
                 case 'tab':
                     self.create_table(line_parts)
                 case 'commit':
-                    Writer(self.cols, self.tabels).write_tables()
+                    Writer(self.cols, self.tabels, line_parts).write_tables()
                 case 'com':
                     pass
 
@@ -46,13 +46,32 @@ class Interpreter:
 
 
 class Writer:
-    def __init__(self, cols: dict, tabs: dict):
+    def __init__(self, cols: dict, tabs: dict, db_path: str):
         self.cols: dict = cols
         self.tabs: dict = tabs
-        pass
+        self.db_path: str = db_path
+        self.type_codes = {
+            "bool": b"\x01",
+            "int": b"\x02",
+            "float": b"\x03",
+            "str": b"\x04",
+        }
 
     def write_tables(self):
-        print('Here will be the next part of the code =)')
+        print(self.cols)
+        with open(self.db_path[2], "wb") as f:
+            cols_to_write = b'\x2f\x73\x79\x6e\x2f\n'
+            tabs_to_write = b''
+            for col_name, col_type in self.cols.items():
+                cols_to_write += col_name.encode('utf-8') + \
+                    b"\x00" + self.type_codes[col_type] + b"\n"
+
+            for tab_name, tab_cols in self.tabs.items():
+                tabs_to_write += tab_name.encode('utf-8') + b'\x2f'
+                for col in tab_cols:
+                    tabs_to_write += col.encode('utf-8') + b'\x00'
+
+            f.write(cols_to_write + tabs_to_write)
 
 
 Interpreter(Read('Synapse_db/commands.sync').read()).find_operation()

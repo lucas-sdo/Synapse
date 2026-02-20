@@ -2,14 +2,13 @@ col/name/str
 col/age/int
 col/is_admin/bool
 col/salary/float
+col/id/id
 
-tab/workers/(name/age/is_admin/salary)
+tab/workers/(id/name/age/is_admin/salary)
+
+add/workers/(John/30/true/2500.0)
 
 commit//Synapse_db\database.syn.db
-
-com/add/workers/("John", 30, false, 2500.0)
-com/add/workers/("Carlos", 42, false, 4000.5)
-com/add/workers/("Maria", 25, true, 9000.0com)
 
 com/rem/workers/(name = "John")
 com/get/workers/(name = "Maria")

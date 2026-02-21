@@ -6,7 +6,10 @@ col/id/id
 
 tab/workers/(id/name/age/is_admin/salary)
 
-add/workers/(John/30/true/2500.0)
+add/workers/(John/30/false/2500.0)
+add/workers/(Mary/21/true/5000.0)
+add/workers/(Alex/42/true/6500.0)
+add/workers/(Taylor/35/false/3500.0)
 
 commit//Synapse_db\database.syn.db
 

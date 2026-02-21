@@ -9,7 +9,7 @@ class Read:
 
 class Executer:
     def __init__(self, lines: list):
-        self.current_id: int = 0
+        self.current_id: int = 1
         self.lines: list = lines
         self.info_to_write = b''
         self.cols = dict()
@@ -30,8 +30,9 @@ class Executer:
                     with open(line_parts[2], "wb") as f:
                         f.write(self.info_to_write)
                 case 'add':
-                    Writer(self.cols, self.tabels,
-                           self.current_id).write_info(line_parts)
+                    self.info_to_write += Writer(self.cols, self.tabels,
+                                                 self.current_id).write_info(line_parts)
+                    self.current_id += 1
                 case 'com':
                     pass
 
@@ -84,7 +85,13 @@ class Writer:
         info = line_parts[2]
         if info.startswith('(') and info.endswith(')'):
             info = info[1:-1].split('/')
-            row_to_write = b'\x72\x6f\x77\x2f' + table.encode('utf-8')
+            row_to_write = b'\x72\x6f\x77\x2f' + \
+                table.encode('utf-8') + b'\x2f' + \
+                self.current_id.to_bytes() + b'\x00'
+            for info_aux in info:
+                row_to_write += info_aux.encode('utf-8') + b'\x00'
+            row_to_write += b'\n'
+            return row_to_write
         else:
             print("Here there will be a standardized error msg.")
 
